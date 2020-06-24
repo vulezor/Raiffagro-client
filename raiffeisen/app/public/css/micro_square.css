@@ -1,0 +1,15 @@
+/* regular */
+@font-face {
+  font-family: 'MicroSquare';
+  font-style: regular;
+  font-weight: 300;
+  src: url(../fonts/MicroSquare Regular.ttf) format('ttf');
+}
+
+/* Bold */
+@font-face {
+  font-family: 'MicroSquare';
+  font-style: regular;
+  font-weight: bold;
+  src: url(../fonts/MicroSquare Bold.ttf) format('ttf');
+}

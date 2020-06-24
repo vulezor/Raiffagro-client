@@ -1,0 +1,12 @@
+<div class="red">
+	<div>{{ usluznoClient.br_prijemnice }}</div>
+	<div>{{ usluznoClient.datum | date:'dd.MM.yyyy' }}</div>
+	<div>{{ usluznoClient.naziv_firme }}</div>
+	<div>{{ usluznoClient.roba_za_merenje }}</div>
+	<div>{{ usluznoClient.vozac }}</div>
+	<div>{{ usluznoClient.registracija_vozila }}</div>
+	<div>{{ usluznoClient.tara | number:3 }}</div>
+	<div>{{ usluznoClient.bruto | number:3 }}</div>
+	<div>{{ usluznoClient.neto | number:3 }}</div>
+	<div><div class="btn btn-xs btn-primary"><i class="fa fa-file-o" ng-click="getPrijemnica({usluzno_id_placeholder:usluznoClient.usluzno_id})"></i></div></div>
+</div>

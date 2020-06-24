@@ -1,0 +1,160 @@
+ <style>
+		article.usluzno_tabla_header{
+			margin-bottom:0px !important;
+		}
+	 	.usluzno_tabla{
+			display:table;
+			width:100%;
+		}
+	 	.usluzno_tabla .red{
+			display:table-row;
+		}
+		.usluzno_tabla .red>div{
+			display:table-cell;
+			font-size:12px;
+			/*float:left;*/
+			border-left:1px solid #ccc;
+			border-bottom:1px solid #ccc;
+		}
+        .usluzno_tabla .red>div{
+			font-size: 12px;
+			text-align: left;
+			line-height: 1.9;
+            padding:0px 5px;
+            text-align:left;
+		}
+        .usluzno_tabla .red:nth-child(odd){  background-color:#fff;}
+        .usluzno_tabla .red:nth-child(even){  background-color:#EEEEEE;}
+
+		.usluzno_tabla .red:first-of-type>div{
+			font-weight:700;
+			font-size: 13px;
+			text-align: center;
+			line-height: 2;
+			background-color:#fff;
+			position:relative;
+		}
+	 	.usluzno_tabla .red:first-of-type>div>span{
+			right:0%;
+			position:absolute;
+			display:block;
+			margin-right:5px;
+		}
+	 	.sort_column::before{
+			content: "\f0dc";
+			font-family: FontAwesome;
+			color:#333 !important;
+		}
+	 	.sort_column.sortorder::before{
+			content: "\f0dd";
+			font-family: FontAwesome;
+			color:#333 !important;
+		}
+	 
+	 	.sort_column.sortorder.reverse::before{
+			content: "\f0de";
+			font-family: FontAwesome;
+			color:#333 !important;
+		}
+	 	
+	 	.usluzno_tabla .red>div:last-of-type{
+			border-right:1px solid #ccc;
+		}
+		.usluzno_tabla .red>div:nth-child(1){width: 5%}
+		.usluzno_tabla .red>div:nth-child(2){width: 10%}
+		.usluzno_tabla .red>div:nth-child(3){width: 20%}
+		.usluzno_tabla .red>div:nth-child(4){width: 15%}
+		.usluzno_tabla .red>div:nth-child(5){width: 10%}
+		.usluzno_tabla .red>div:nth-child(6){width: 10%}
+		.usluzno_tabla .red>div:nth-child(7),
+	 	.usluzno_tabla .red>div:nth-child(8),
+	 	.usluzno_tabla .red>div:nth-child(9){
+			width: 8%; 
+			text-align:right
+		}
+		.usluzno_tabla .red>div:nth-child(10){
+			width: 6%;
+			text-align:center
+		}
+	 	.usluzno_tabla .red:first-of-type>div:nth-child(7),
+		.usluzno_tabla .red:first-of-type>div:nth-child(8),
+		.usluzno_tabla .red:first-of-type>div:nth-child(9){
+			width: 8%; 
+			text-align:center
+		}
+	 
+		 .usluzno_tabla .btn{
+			margin:5px 0px;
+		 }
+	 
+	
+	</style>
+	<div class="page_wrapper">
+
+	<article class="page_header cf">
+		<h1 class="page-title">
+		<i class="fa fa-truck fa-lg"></i>
+	  Pregled Usluznog Merenja</h1>
+	</article>
+	
+	<!-- USER TABLE -->
+    <article class="usluzno_tabla_header">
+        <div class="col-mg-12 form-header font-md font-white">
+            <i class="fa fa-table"></i><span> Pregled merenja (usluga)</span>
+        </div>
+    </article>
+    <div class="cf" style="border:1px solid #ccc;padding:5px 0px">
+	   <div class="search_contaner smart-form">
+		   <div class="col col-md-3">
+			   <section class="col col-sm-6 fixsection" style="margin-bottom:0px">
+					<label class="input">
+						<i class="icon-prepend fa fa-search"></i>
+						<input type="text" class="input-sm " name="name" placeholder="Pretraga" data-ng-model="search_clients" >
+					</label>
+				</section>
+
+			</div>
+		   <div class="col col-md-3" style="font-style:italic">filtrirano {{ (clients | filter:search_clients).length }} od ukupno {{ clients.length }} rezultata</div>
+		   <div class="col col-md-3">
+		   <button class="btn btn-xs btn-primary" ng-click="generateXLS()" style="margin:0px"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+		   <button class="btn btn-xs btn-primary" ng-click="print()" style="margin:0px"><i class="fa fa-print " aria-hidden="true"></i></button>
+		   </div>
+	   </div>
+   </div>
+    <div class="usluzno_tabla">
+    	<div class="red">
+    		<div ng-click="order('usluzno_id')">
+    			<span class="sort_column" ng-class="{'sortorder':sort_column == 'usluzno_id','reverse':reverse}"></span>Br 
+    		</div>
+    		<div ng-click="order('datum')">
+    			<span class="sort_column" ng-class="{'sortorder':sort_column == 'datum','reverse':reverse}"></span>Datum 
+    		</div>
+    		<div ng-click="order('firm_name')">
+    			<span class="sort_column" ng-class="{'sortorder':sort_column == 'firm_name','reverse':reverse}"></span>Naziv Firme
+    		</div>
+    		<div ng-click="order('good_name')">
+    			<span class="sort_column" ng-class="{'sortorder':sort_column == 'good_name','reverse':reverse}"></span>Naziv robe 
+    		</div>
+    		<div ng-click="order('vozac')">
+    			<span class="sort_column" ng-class="{'sortorder':sort_column == 'vozac','reverse':reverse}"></span>Vozač 
+    		</div>
+    		<div ng-click="order('reg_vozila')">
+    			<span class="sort_column" ng-class="{'sortorder':sort_column == 'reg_vozila','reverse':reverse}"></span>Registracija
+    		</div>
+    		<div ng-click="order('tara')">
+    			<span class="sort_column" ng-class="{'sortorder':sort_column == 'tara','reverse':reverse}"></span>Tara 
+    		</div>
+    		<div ng-click="order('bruto')">
+    			<span class="sort_column" ng-class="{'sortorder':sort_column == 'bruto','reverse':reverse}"></span>Bruto
+    		</div>
+    		<div ng-click="order('neto')">
+    			<span class="sort_column" ng-class="{'sortorder':sort_column == 'neto','reverse':reverse}"></span>Neto 
+    		</div>
+    		<div>Štampa</div>
+    	</div>
+    	
+    	<usluzno-client-list data-ng-repeat="client in clients | filter:search_clients | orderBy:sort_column:reverse" get-prijemnica="getPrijemnica(usluzno_id_placeholder)" usluzno-client="client"></usluzno-client-list>
+    	
+    	
+    </div>
+</div>

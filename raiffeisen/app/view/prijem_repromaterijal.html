@@ -1,0 +1,498 @@
+<div class="page_wrapper">
+	
+	
+	
+
+	<!--Client Wrapper-->
+	<div ng-show="show_clients" class=" box-shadowing client-wrapper " >
+		
+			<div class="form-header font-md font-white client_panel_header" >
+				<i class="fa fa-user-plus " ></i> Dobavljači/Kupci
+				<span data-ng-click="showClientPanel()"><i class="fa fa-times"></i></span>
+			</div>
+			
+		<div class="cf" style="background:#eee;border-bottom:1px solid #999">
+			<div class="model_con">
+				<div class="row">
+					<div class="col col-sm-2"><input type="text" data-ng-model="search.client_cypher" placeholder="Šifra klijenta" /></div>
+					<div class="col col-sm-2"><input type="text" data-ng-model="search.firm_name" placeholder="Naziv firme" /></div>
+					<div class="col col-sm-2"><input type="text" data-ng-model="search.client_address" placeholder="Adresa" /></div>
+					<div class="col col-sm-2"><input type="text" data-ng-model="search.place" placeholder="Mesto" /></div>
+					<div class="col col-sm-2"><input type="text" data-ng-model="search.client_name" placeholder="Odgovorno Lice" /></div>
+					<div class="col col-sm-1"><input type="text" data-ng-model="search.client_jmbg" placeholder="JMBG" /></div>
+					<div class="col col-sm-1"></div>
+				</div>
+			</div>
+			<div style="float:right;width:17px;">
+			</div>
+		</div>		
+		<div class="client_panel_body">
+				<div>
+				<div class="row" data-ng-repeat="client in clients  | filter:{client_cypher: search.client_cypher, firm_name: search.firm_name, client_address: search.client_address, place: search.place, client_name: search.client_name, client_jmbg: search.client_jmbg}">
+					<div class="col col-sm-2">{{client.client_cypher}}</div>
+					<div class="col col-sm-2">{{client.firm_name}}</div>
+					<div class="col col-sm-2">{{client.client_address}}</div>
+					<div class="col col-sm-2">{{client.place}}</div>
+					<div class="col col-sm-2">{{client.client_name}}</div>
+					<div class="col col-sm-1">{{client.client_jmbg}}</div>
+					
+					<div class="col col-sm-1"><span ng-click="setClient(client.client_id)" class=" btn btn-sm label label-primary">Ok</span></div>
+				</div>
+				</div>	
+			</div>	
+	</div>
+	<!-- /Client Wrapper-->
+	
+	<style>
+	
+			
+	.goods-wrapper{
+		width:1000px !important;
+		position:absolute;
+		left:50%;
+		margin-left:-500px;
+		z-index:1000;
+		background-color:#cccccc;
+	}
+	
+	.send_good_header{
+		border:1px solid #6B7652;
+		margin:0px 15px 0px 15px;
+		overflow-x:hidden;
+		overflow-y:auto;
+		font-size:12px;
+		color:#ffffff;
+		background-color:#6B7652;
+	}
+	.send_good_header>div:nth-child(1){
+		width:calc(100% - 17px);
+		/*border-right:1px solid #ffffff;*/
+	}
+	.send_good_header>div:nth-child(2){
+		width:17px;
+		
+	}
+	.send_good_body{
+		height:115px;
+		border:1px solid #BDBDBD;
+		margin:0px 15px 0px 15px;
+		overflow-x:hidden;
+		overflow-y:scroll;
+		font-size:12px;
+	}
+	.send_good_body>div div{
+		line-height:2;
+	}
+	.send_good_body>div:nth-child(even) {background: #EEEEEE;}
+	.send_good_body>div:nth-child(odd) {background: #FFFFFF;}
+	.send_good_body>div:hover {background: #cccccc;}
+	i.delete_good{
+		cursor:pointer;
+		-webkit-transition:all 0.2s ease-in-out;
+		-moz-transition:all 0.2s ease-in-out;
+		-o-transition:all 0.2s ease-in-out;
+		transition:all 0.2s ease-in-out;
+	}
+	
+	i.delete_good:hover{
+		color:#CC0000;
+		-o-transform: scale(1.5);
+		-moz-transform: scale(1.5);
+		transform: scale(1.5);
+	}
+	</style>
+	
+	<!--Good Wrapper-->
+	<div ng-show="show_goods" class="box-shadowing goods-wrapper" >
+		
+			<div class="form-header font-md font-white client_panel_header goods_head" >
+				<i class="fa fa-shopping-basket " ></i> Dodeljivanje stavki repromaterijala
+				<span data-ng-click="showGoodsPanel()"><i class="fa fa-times"></i></span>
+			</div>
+			<div class="goods_body">
+				<div class="cf">
+					<div class="order_panels">
+						<div class="form-header font-md font-white goods_panel_header" >
+							
+								<select ng-model="sel_good_type" ng-options="tn.id as tn.type_name for tn in order_good_type">
+									<option value="">Odaberi tip robe</option> 
+								</select>&nbsp; 
+								<input type="text" name="sel_good_cypher" ng-model="sel_good_cypher" placeholder="filter šifre robe">&nbsp; 
+								<input type="text" name="sel_good_name" ng-model="sel_good_name" placeholder="filter naziva robe">
+							
+						</div>
+						<div class="order_panels_body smart-form" >
+						<div class="cf"  data-ng-repeat="good in goods_total  | filter:{type_of_goods_id: sel_good_type, goods_name:sel_good_name, goods_cypher:sel_good_cypher}">
+							<span>{{$index + 1}}. {{ good.goods_name }}</span>
+							<button class="pull-right btn btn-success btn-xs" style="margin:0px" data-ng-click="orderGoods(good)"><i class="fa fa-arrow-right"></i></button>
+							
+						</div>
+						</div>
+					</div>
+					<div class="order_panels" style="right:0%">
+						<div class="form-header font-md font-white goods_panel_header" >
+							Dodeljena roba za ulaz u magacin
+						</div>
+						<div class="order_panels_body" >
+						<div class="cf"  data-ng-repeat="order in goods_ordered ">
+							<div class="col col-sm-5">{{$index + 1}}. {{ order.goods_name }}</div> 
+							<div class="col col-sm-5">
+								<select style="width:50%;border:1px solid #ccc" ng-if="order.type_of_goods_id==7" ng-model="order.lot_id" ng-options="lot.lot_id as lot.lot_name for lot in lotovi track by lot.lot_id">
+                                	<option value="">Partija</option>
+                            	</select>
+								<input type="text" style="width:45%;text-align:right" ng-model="order.quantity" is-number /> 
+							</div>
+							<div class="col col-sm-1">
+								{{ order.measurement_unit}} 
+							</div>
+							<div class="col col-sm-1">
+								<buton class="btn btn-danger btn-xs" style="margin-top:0px" data-ng-click="deleteFromOrder(order)"><i class="fa fa-trash-o" ></i></buton>
+							</div>
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+	<!-- /GOOD Wrapper-->
+	
+	
+    <article class="page_header cf">
+        <h1 class="page-title">
+            <i class="fa fa-download fa-lg"></i></i>
+          Prijem robe <span>(Repromaterijal)</span></h1>
+    </article>
+
+    <article class="" >
+        <div class="row" style="width:1150px;">
+            <div class="col col-sm-6" style="" >
+                <div style="max-width: 100%">
+                    <div class="col-mg-12 form-header font-md font-white">
+                        <i class="fa fa-download fa-lg" ></i></i><span> <b>Prijem robe:</b> Repromaterijal</span>
+                        <div class="pull-right cf" style="font-size:12px;margin-top:-3px">
+									<!--<span style="padding-top:4px" class="pull-left">Da li se roba vaga:</span> <section class="smart-form pull-left" style="display:inline-block;"> <label class="toggle"><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="insert_data.vaga" ng-change="setVaga()"><i data-swchon-text="DA" data-swchoff-text="NE"></i></label></section>-->
+						</div>
+					 
+                    </div>
+                    <form id="merkantila_form" class="form-horizontal" method="post" name="client_form"  ng-submit="firstMeasurement()" novalidate>
+                        <div class="form-frame background-white smart-form cf">
+							<div style="height:335px">
+								<div class="row">
+									<smart-input section-class="col col-sm-6 fixsection" label-class="input" input-class="input-sm text-left" icon="icon-prepend fa fa-file-o for_infobox" placehold="Br otpremnice prodavca"   name="otpremnica_prodavca" model="insert_data.otpremnica_prodavca" maxl="25" directive="custom-validation"></smart-input>
+									<div class="col col-sm-6 fixsection" ng-hide="insert_data.vaga === false">
+									<smart-input section-class="col col-sm-8 fixsection" label-class="input" input-class="input-sm text-right" icon="icon-prepend fa fa-balance-scale for_infobox" placehold="Bruto težina"   name="bruto" model="insert_data.bruto" maxl="6" directive="is-number" ></smart-input>
+										<section class="col col-sm-4 fixsection ">
+										  <label class="text">
+											  <span class="label label-primary col col-sm-12" style="color:#fff;line-height:1.5;font-weight:600">{{ insert_data.measurement_unit }}</span>
+											</label>
+										</section>
+                                    </div>
+                                    <div class="col col-sm-6 fixsection" ng-hide="insert_data.vaga === true">
+										<button type="button"  class="btn btn-success btn-sm col col-sm-12 get_goods" style="margin:0px" data-ng-click="getGoods()"><i class="fa fa-shopping-basket"></i> Dodaj robu</button>
+                                    </div>
+                            	</div>
+                            	<div class="row" data-ng-hide='insert_data.vaga === false'>
+								
+                                <smart-select section-class="col col-sm-6 fixsection" label-class="select" select-class="input-sm"  placehold="Izaberi tip Repromaterijala" name="type_of_goods_id" model="insert_data.type_of_goods_id" options="m.type_of_goods_id as m.goods_type | capitalize for m in goods_type | orderBy:'m.label'" icon="for_infobox" action="data-ng-change='selectGoodsName()'"></smart-select>
+							
+								 <smart-select section-class="col col-sm-6 fixsection" label-class="select" select-class="input-sm"  placehold="Izaberi naziv merkantilne robe" name="goods_id" model="insert_data.goods_id" options="g.goods_id as g.goods_name for g in goods_name | orderBy:'g.goods_name'" icon="for_infobox" ></smart-select><!--action="data-ng-change='findMeasurementUnit()'"-->
+                            </div>
+                            	<div class="row">
+									<smart-input section-class="col col-sm-6 fixsection" label-class="input" icon="icon-prepend fa fa-user-plus for_infobox" placehold="Odabir dobavljača" readonly="readonly" name="firm_name" model="insert_data.firm_name" directive="custom-validation"></smart-input>
+									<section class="col col-sm-6 fixsection">
+											<button type="button" class="col col-sm-12 btn btn-success btn-sm pull-right get_client" data-ng-click="getClient()" style="margin-top:0px"><i class="fa fa-user-plus"></i> Dodaj Dobavljača</button>
+									</section>
+								</div>
+								<div class="row">
+									<smart-input section-class="col col-sm-6 fixsection" label-class="input" icon="icon-prepend fa fa fa-truck for_infobox" placehold="Ime vozača"  name="driver_name" model="insert_data.driver_name" directive="custom-validation"></smart-input>
+
+									<smart-input section-class="col col-sm-6 fixsection" label-class="input" icon="icon-prepend fa fa-truck for_infobox" placehold="Registarski broj vozila"  name="driver_reg" model="insert_data.driver_reg" directive="custom-validation"></smart-input>
+								</div>
+
+								<div class="row">
+									<smart-input section-class="col col-sm-6 fixsection" label-class="input" input-class="input-sm" icon="icon-prepend fa fa-calendar for_infobox" placehold="Datum"   name="datum" model="insert_data.datum" maxl="6" readonly="readonly" ></smart-input>
+
+									<smart-input section-class="col col-sm-6 fixsection" label-class="input" icon="icon-prepend fa fa-question-circle for_infobox" placehold="Napomena"  name="napomena" model="insert_data.napomena" directive="custom-validation"></smart-input>
+								</div>
+
+                        		<div class="row send_good_container" data-ng-hide='insert_data.vaga === true'>
+                        		<div class="send_good_header cf">
+                        			<div class="pull-left cf">
+										<div style="width:60%;float:left" title="Naziv Proizvoda">Naziv proizvoda</div>
+										<div style="width:20%;float:left" class="text-right" title="Količina">Kolicina</div>
+										<div style="width:10%;float:left" class="text-center" title="Merna Jedinica">M.J</div>
+										<div style="width:10%;float:left" title="Brisanje">Brisanje</div>
+                        			</div>
+									<div class="pull-right" ></div>
+                        		</div>
+                        		<div class="send_good_body cf" >
+                        			<div class="cf" data-ng-repeat="order in goods_ordered">
+										<div style="width:60%;float:left">{{$index + 1}}. {{order.goods_name}}</div>
+										<div style="width:20%;float:left" class="text-right">{{order.quantity}}</div>
+										<div style="width:10%;float:left" class="text-center">{{order.measurement_unit}}</div>
+										<div style="width:10%;float:left" class="text-center"><i  class="fa fa-trash-o delete_good" data-ng-click="deleteFromOrder(order)" ></i></div>
+                        			</div>
+ 
+                        		</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<hr/>
+                                  <section class="col col-sm-6 fixsection ">
+									  <label class="input">
+                                            <button type="submit" class="btn btn-sm btn-primary pull-left" id="unos_korisnika" >Potvrdi</button>
+                                        </label>
+                                        <i class="fa fa-cog fa-2x fa-spin pull-left ajax_load_visibility" style="margin-top:10px"></i>
+                                        
+                                    </section>
+                                    <section class="col col-sm-6 fixsection submit_prijem">
+                                        <div data-ng-hide='insert_data.vaga === false' class="cf" style="float:right;position:relative;margin-top:12px;font-size:28px;border:5px solid #337ab7;text-align:right;width:140px;padding:5px; font-weight:bold;color:#337ab7; height:38px">
+											<div style="background-color:#337ab7;color:#fff;position:absolute;top:0;left:0;padding:5px"><i class="fa fa-balance-scale"></i></div>
+											<div style="float:right"  ng-model="insert_data.bruto" >{{ insert_data.bruto }}</div>
+									  </div>
+                                    </section>
+                                </div>
+							
+                    </form>
+                </div>
+				
+            </div>
+			
+        </div>
+		<div class="col col-sm-6 prijemnica" style="position:relative;">
+			<div style="background:#fff;">
+				<div class="form-header font-md font-white">
+                        <i class="fa fa-file-text-o  fa-lg" ></i><span> Prijemnica Br: {{ last_measurement.document_br}}</span>
+						<div class="pull-right header-item cf">
+							<span class="pull-right" ng-click="print()"><i class="fa fa-print" ></i></span>
+							<span class="pull-right prijemSearch" ng-click="gimePrijemPanel()"><i class="fa fa-cog" ></i></span>
+							<!--<span class="pull-right" ng-click="closePrijemPanel()"><i class="fa fa-user" ></i></span>-->
+						</div>
+					    
+                </div>
+			<div class="form-frame background-white smart-form cf prijemnica_pregled" style="min-height:373px;font-size:12px;overflow:hidden;" >
+					<!-- Prijem panel pretraga-->
+					<div class="searchPanelPrijem">
+						<div class="form-header font-md font-white searchPanelHead" style="border-radius:4px 4px 0px 0px;">
+								<i class="fa fa-search fa-lg" ></i><span> Pretraga prijemnica</span>
+						</div>
+						<div style="padding:10px;">
+							<div class="row">
+								<smart-input section-class="col col-sm-12 fixsection" label-class="input" icon="icon-prepend fa fa-calendar for_infobox" placehold="Odabir datuma prijema" readonly="readonly" name="datumPrijema" model="prijemSearch.datumPrijema" input-action="ng-change='getSearchType()'"></smart-input>
+							</div>	
+							<div class="row">
+								<smart-select section-class="col col-sm-12 fixsection" label-class="select" select-class="input-sm"  placehold="Izaberi tip merkantile" name="prijemSearch.input_type" model="prijemSearch.input_type_id" options="ty.type_of_goods_id as ty.goods_type | capitalize for ty in prijemSearch.input_type" icon="for_infobox" action="ng-change='getSearchMerkantilaName()'"></smart-select>
+							</div>
+							<div class="row">
+								<smart-select section-class="col col-sm-12 fixsection" label-class="select" select-class="input-sm"  placehold="Izaberi naziv merkantilne robe" name="goods_id" model="prijemSearch.goods_id" options="go.goods_id as go.goods_name for go in prijemSearch.goods_names | orderBy:'go.prijemSearch.goods_name'" icon="for_infobox"  action="ng-change='getSearchPrijemnica()'"></smart-select>
+							</div>
+							<div class="row">
+								<smart-select section-class="col col-sm-12 fixsection" label-class="select" select-class="input-sm"  placehold="Odaberi prijemnicu" name="input_id" model="prijemSearch.input_id" options="prijem.input_id as prijem.document_br +' | '+ prijem.goods_name +' | '+  prijem.firm_name  for prijem in prijemSearch.inputs | orderBy:'prijem.input_id'" icon="for_infobox" action="ng-change='selectOdabraniPrijem()'"></smart-select>
+							</div>
+						</div>	
+					</div><!-- /Prijem panel pretraga-->
+					<!-- ifZitarice -->
+				<div data-ng-show="showInput">
+					<div class="col col-sm-2 text-right"><b>Dokument:</b></div>
+					<div class="col col-sm-4 text-right">{{ last_measurement.document_br }} <i class="fa fa-file-text-o fa-fw"></i></div>
+					<div class="col col-sm-1 text-right"><b>Datum:</b></div><div class="col col-sm-5 text-right"><i class="fa fa-calendar fa-fw"></i> {{ last_measurement.date+' - '+ last_measurement.time}} <i class="fa fa-clock-o  fa-fw"></i></div>
+					
+					<div class="col col-sm-12"><hr></div>
+					
+					<div class="col col-sm-2"><b>Dobavljac:</b></div><div class="col col-sm-4">{{last_measurement.firm_name}}</div>
+					<div class="col col-sm-2"><b>Vozac:</b></div><div class="col col-sm-4">{{last_measurement.driver_name | capitalize}} <i class="fa fa fa-truck fa-fw pull-right"></i></div>
+					<div class="col col-sm-2"><b>Adresa:</b></div><div class="col col-sm-4">{{ last_measurement.client_address }}</div>
+					<div class="col col-sm-2"><b>Registracija:</b></div><div class="col col-sm-4">{{last_measurement.vehicle_registration | uppercase}} <i class="fa fa fa-truck fa-fw pull-right"></i></div>
+					<div class="col col-sm-2"><b>Mesto:</b></div><div class="col col-sm-4">{{ last_measurement.place_name +', '+ last_measurement.post_number }}</div>
+					<div class="col col-sm-2"><b>&nbsp;</b></div><div class="col col-sm-4">&nbsp;  </div>
+					<div class="col col-sm-3"><b>Br otpremnice:</b></div><div class="col col-sm-3">{{last_measurement.otpremnica_prodavca}}</div>
+					<div class="col col-sm-12"><b>Napomena:</b>{{last_measurement.repromaterijal_napomena}}</div>
+					<div class="col col-sm-12"><hr></div>
+					<div data-ng-hide="ifMereno">
+						<div class="col col-sm-2"><b>Bruto:</b></div>
+						<div class="col col-sm-4 text-right">{{last_measurement.inputs[0].bruto}} kg <i class="fa fa-balance-scale fa-fw"></i></div>
+						<div class="col col-sm-2">&nbsp;</div>
+						<div class="col col-sm-4 text-right">&nbsp;</div>
+						<div class="col col-sm-2" ><b>Tara:</b></div>
+						<div class="col col-sm-4 text-right">{{last_measurement.inputs[0].tara}} kg <i class="fa fa-balance-scale fa-fw"></i></div>
+						<div class="col col-sm-2">&nbsp;</div>
+						<div class="col col-sm-4 text-right">&nbsp;</div>
+						<div class="col col-sm-2"><b>Neto:</b></div>
+						<div class="col col-sm-4 text-right">{{ last_measurement.inputs[0].neto }} kg <i class="fa fa-balance-scale fa-fw"></i></div>
+
+						<div class="col col-sm-12"><hr></div>
+					</div>	
+					<div class="row" style="font-weight:bold;margin:0px">
+						<div class="col col-sm-5">Naziv Proizvoda</div>
+						<div class="col col-sm-2 text-right">Partija</div>
+						<div class="col col-sm-2 text-right">Kolicina</div>
+						<div class="col col-sm-2">Merna jedinica</div>
+						
+					</div>
+					<div data-ng-show="ifMereno" style="overflow-x:hidden;overflow-y:auto;height:217px">
+						<div data-ng-repeat="input in last_measurement.inputs">
+							<div class="col col-sm-5" style="overflow:hidden;text-overflow:  ellipsis;white-space: nowrap;">{{$index + 1}}. {{input.goods_name}}</div>
+							<div class="col col-sm-2 text-right">{{input.lot_name}}</div>
+							<div class="col col-sm-2 text-right">{{input.kolicina}}</div>
+							<div class="col col-sm-2"> ({{input.measurement_unit}})</div>
+						</div>
+					</div>
+					<div data-ng-hide="ifMereno">
+							<div data-ng-repeat="input in last_measurement.inputs">
+							<div class="col col-sm-6"  style="overflow:hidden;text-overflow:  ellipsis;white-space: nowrap;">{{$index + 1}}. {{input.goods_name}}</div>
+							<div class="col col-sm-3 text-right">{{input.neto}}</div>
+							<div class="col col-sm-3">Kilogram (KG)</div>
+						</div>
+					</div>
+					
+					
+					
+					
+				 </div>
+
+			</div>
+			</div>
+			</div>
+    </article>
+	<!-- USER TABLE -->
+    <article class="">
+        <div class="col-mg-12 form-header font-md font-white">
+            <i class="fa fa-table"></i><span> Prvo merenje (repromaterijal)</span>
+        </div>
+        <div ng-controller="measurementListRepromaterijal as repromaterijalShowCase" style="position:relative">
+            <table datatable="" dt-options="repromaterijalShowCase.dtOptions" dt-columns="repromaterijalShowCase.dtColumns" dt-instance="repromaterijalShowCase.dtInstance"   class="table table-striped table-bordered tables_font" cellspacing="0" cellpadding="0"  width="100%" style="width:0px;font-family:arial">
+                <!--<p>
+                    <button type="button" data-ng-click="showCase.stateChange()">Hello</button>
+                </p>-->
+            </table>
+        </div>
+    </article>
+    
+    <!--PRINT PRIRPEMA-->
+
+	<div class="print_prijem" style="position:absolute;top:0%;left:0%;z-index:10;display:none">
+		<div class="print logo_area ">
+			<img src="app/public/img/images/raiffeisen_redovan2.png" width="180" style="padding-bottom:20px"> 
+			<div class="cf">
+				<div class="one-half push-left"><b>Dokument br:</b> <i class="fa fa-file-text-o fa-fw"></i> {{ last_measurement.document_br }}</div>
+				<div class="one-half push-right text-right"><b>Datum i vreme:</b> 
+					<i class="fa fa-calendar fa-fw"></i> {{ last_measurement.date+' - '+ last_measurement.time}} <i class="fa fa-clock-o  fa-fw"></i>
+				</div>	
+			</div>
+			<div class="cf">
+				<div class="one-half push-left"><b>Magacin:</b> <i class="fa fa-database fa-fw"></i> {{ last_measurement.wearehouse_name }}</div>
+				<div class="one-half push-right text-right"><b>Magacioner:</b> <i class="fa fa-user fa-fw"></i> {{ last_measurement.storekeeper }}</div>	
+			</div>
+		</div>
+		
+		<hr/>
+		
+		<div class="text-center"><h3>Prijemnica br: <i class="fa fa-file-text-o fa-fw"></i> {{ last_measurement.document_br }}</h3></div>
+		<div class="cf">
+			<div class="one-half push-left"><h4><b><u>Vlasnik/Dobavljac robe</u></b></h4></div>
+				<div class="one-half push-right text-right"><h4><b><u>Kupac / Otkupljivac robe</u></b></h4></div>	
+		</div>
+		
+		<div class="cf">
+			<div class="one-half push-left">
+				<div class="cf">
+					<div><b>otpremnica Dobavljaca:</b> {{  last_measurement.client_cypher+', '+last_measurement.firm_name }}</div>
+					<div><b>Dobavljac:</b> {{  last_measurement.client_cypher+', '+last_measurement.firm_name }}</div>
+					<div><b>Mesto:</b> {{ last_measurement.post_number+' '+last_measurement.place_name }}</div>
+					<div><b>Adresa:</b> {{ last_measurement.client_address }}</div>
+					<div ng-show="last_measurement.client_brlk != 0"><b>Br.Licne karte:</b> {{ last_measurement.client_brlk +', '+ last_measurement.client_sup }}</div>
+					<div ng-show="last_measurement.client_jmbg != 0"><b>JMBG:</b> {{ last_measurement.client_jmbg}}</div>
+					<div
+						ng-show="last_measurement.maticni_br != '' || last_measurement.maticni_br != 0"
+					>
+						<b>Maticni broj:</b> {{ last_measurement.maticni_br }}
+					</div>
+					<div ng-show="last_measurement.br_agricultural != ''"><b>BPG:</b> {{ last_measurement.br_agricultural }}</div>
+					<div ng-show="last_measurement.pib != 0"><b>PIB:</b> {{ last_measurement.pib }}</div>
+					<div><b>Vozac:</b> {{ last_measurement.driver_name}}</div>
+					<div><b>Registarske table :</b> {{ last_measurement.vehicle_registration | uppercase }}</div>
+				</div>	
+			</div>	
+			<div class="one-half push-right">
+				<div class="cf">
+					<div class="text-right"><b>Kupac:</b> RWA Srbija d.o.o</div>
+					<div class="text-right"><b>Mesto:</b> 10070 Novi Beograd</div>
+					<div class="text-right"><b>Adresa:</b> Bulevar Zorana Đinđića 67/17,</div>
+					<div class="text-right"><b>PIB:</b> 105528683</div>
+					<div class="text-right">
+						<b>Maticni Broj:</b> 20405112
+					</div>
+				</div>	
+			</div>	
+		</div>
+		<div class="row">
+		<div class="col col-sm-12"><b>Napomena:</b>{{last_measurement.repromaterijal_napomena}}</div>
+		</div>
+		<div data-ng-hide="ifMereno">
+		
+		<hr/>
+		<div ><h4><b><u>Vaga </u></b></h4></div>
+		<div class="cf">
+			<div class="one-half push-left">
+				<div class="cf">
+					<div class="one-half push-left"><b>Bruto:</b></div>
+					<div class="one-half push-right text-right right-padding">{{ last_measurement.inputs[0].bruto}} kg <i class="fa fa-balance-scale fa-fw"></i></div>
+				</div>		
+				<div class="cf">
+					<div class="one-half push-left"><b>Tara:</b></div>
+					<div class="one-half push-right text-right right-padding">{{ last_measurement.inputs[0].tara}} kg <i class="fa fa-balance-scale fa-fw"></i></div>
+				</div>
+				<div class="cf" >
+					<div class="one-half push-left " style="font-size:16px;font-weight:bolder"><b>Neto:</b></div>
+					<div class="one-half push-right text-right right-padding"><span style="font-size:16px;font-weight:bolder">{{ last_measurement.inputs[0].neto}} kg</span> <i class="fa fa-balance-scale fa-fw"></i></div>
+				</div>
+			
+			</div>	
+			
+			<div class="one-half push-right" data-ng-show="ifSacma">
+				
+			</div>	
+			
+			
+		</div>	
+		</div>
+		
+		<hr/>
+		<div><h4><b><u></u></b></h4></div>
+		<div class="cf" >
+			<div class="push-left" style="width:40%"><b>Naziv proizvoda:</b></div>
+			<div class="push-left" style="width:15%"><b>Tip proizvoda:</b></div>
+			<div class="push-left text-right" style="width:20%"><b>Partija</b></div>
+			<div class="push-left text-center" style="width:15%"><b>Kolicina</b></div>
+			<div class="push-left" style="width:10%"><b>M.J</b></div>
+		</div>
+		<div class="cf"  data-ng-show="ifMereno" style="font-size:12px">
+			<div data-ng-repeat="input in last_measurement.inputs">
+				 <div class="push-left" style="width:40%">{{ $index + 1 +'. '+ input.goods_name}}</div>
+				<div class="push-left" style="width:15%">{{ input.goods_type | capitalize }}</div>
+				<div class="push-left text-right" style="width:20%">{{ input.lot_name != null ? input.lot_name : "&nbsp;" }}</div>
+				<div class="push-left text-right" style="width:15%">{{ input.kolicina }}&nbsp; &nbsp; &nbsp; &nbsp; </div>
+				<div class="push-left" style="width:10%">({{input.measurement_unit}})</div>
+			</div>
+		</div>
+		<div class="cf"  data-ng-hide="ifMereno" style="font-size:12px">
+			<div data-ng-repeat="input in last_measurement.inputs">
+				<div class="push-left" style="width:40%">{{ $index + 1 +'. '+ input.goods_name}}</div>
+            	<div class="push-left" style="width:15%">{{ input.goods_type | capitalize }}</div>
+            	<div class="push-left text-right" style="width:20%">{{ input.lot_name != null ? input.lot_name : "&nbsp;" }}</div>
+            	<div class="push-left text-right" style="width:15%">{{ input.neto }}&nbsp; &nbsp; &nbsp; &nbsp; </div>
+            	<div class="push-left" style="width:10%">(KG)</div>
+			</div>
+		</div>
+		
+		
+		
+		<div clss="cf" style="width:100%;position:absolute;bottom:0%">
+			<div class="one-third push-left text-center">Magacioner<br/><br/>____________________</div>
+			<div class="one-third push-left text-center">&nbsp;<br/><br/>&nbsp;</div>
+			<div class="one-third push-right text-center">Dobavljac/Vozac<br/><br/>____________________</div>
+		</div>
+	</div>
+
+

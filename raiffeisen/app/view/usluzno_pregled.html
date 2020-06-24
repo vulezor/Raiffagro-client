@@ -1,0 +1,124 @@
+<div class="page_wrapper">
+
+	<article class="page_header cf">
+		<h1 class="page-title">
+		<i class="fa fa-truck fa-lg"></i>
+	  Pregled Usluznog Merenja</h1>
+	</article>
+	
+	<!-- USER TABLE -->
+    <article class="">
+        <div class="col-mg-12 form-header font-md font-white">
+            <i class="fa fa-table"></i><span> Pregled merenja (usluga)</span>
+        </div>
+        
+    </article>
+    
+	<div ng-controller="usluznoListPregled as userShowCase" style="position:relative">
+            <table datatable="" dt-options="userShowCase.dtOptions" dt-columns="userShowCase.dtColumns" dt-instance="userShowCase.dtInstance"   class="table table-striped table-bordered tables_font" cellspacing="0" cellpadding="0"  width="100%" style="width:0px;font-family:arial">
+         
+            </table>
+    </div>
+    
+    
+        <!--PRINT PRIRPEMA-->
+
+	<div class="print_prijem" style="position:absolute;top:0%;left:0%;z-index:10;display:none">
+		<div class="print logo_area ">
+			<img src="app/public/img/images/raiffeisen_redovan2.png" width="180" style="padding-bottom:20px"> 
+			<div class="cf">
+				<div class="one-half push-left"><b>Dokument br:</b> <i class="fa fa-file-text-o fa-fw"></i> {{ last_measurement.usluzno_id }}</div>
+				<div class="one-half push-right text-right"><b>Datum i vreme:</b> 
+					<i class="fa fa-calendar fa-fw"></i> {{ last_measurement.date+' - '+ last_measurement.time}} <i class="fa fa-clock-o  fa-fw"></i>
+				</div>	
+			</div>
+			<div class="cf">
+				<div class="one-half push-left"><b>Magacin:</b> <i class="fa fa-database fa-fw"></i> {{ last_measurement.wearehouse_name }}</div>
+				<div class="one-half push-right text-right"><b>Magacioner:</b> <i class="fa fa-user fa-fw"></i> {{ last_measurement.storekeeper }}</div>	
+			</div>
+		</div>
+		
+		<hr/>
+		
+		<div class="text-center"><h3>Prijemnica br: <i class="fa fa-file-text-o fa-fw"></i> {{ last_measurement.usluzno_id }} / usluzno merenje:</h3></div>
+		<div class="cf">
+			<div class="one-half push-left"><h4><b><u>Naziv firme:</u></b></h4></div>
+				<div class="one-half push-right text-right"><h4><b><u>Usluga vage</u></b></h4></div>	
+		</div>
+		
+		<div class="cf">
+			<div class="one-half push-left">
+				<div class="cf">
+					<div><b>Firma:</b> {{ last_measurement.firm_name }}</div>
+					<div><b>Mesto:</b> {{ last_measurement.place_name }}</div>
+					<div><b>Adresa:</b> {{ last_measurement.adresa }}</div>
+				</div>	
+			</div>	
+			<div class="one-half push-right">
+				<div class="cf">
+					<div class="text-right"><b>Pruzio uslugu:</b> RWA Srbija d.o.o</div>
+					<div class="text-right"><b>Mesto:</b> 10070 Novi Beograd</div>
+					<div class="text-right"><b>Adresa:</b> Bulevar Zorana Đinđića 67/17,</div>
+					<div class="text-right"><b>PIB:</b> 105528683</div>
+				</div>	
+			</div>	
+		</div>
+		
+		
+		<hr/>
+		<div><h4><b><u>Podaci o predatoj robi i vozacu</u></b></h4></div>
+		<div class="cf">
+			<div class="one-half push-left">
+				<div class="cf">
+							
+							<div><b>Naziv robe :</b> {{ last_measurement.good_name}}</div>
+				</div>	
+			</div>	
+			<div class="one-half push-right">
+				<div class="cf">
+							<div class="text-right"><b>Vozac:</b> {{ last_measurement.vozac}}</div>
+							<div class="text-right"><b>Registarske table :</b> {{ last_measurement.reg_vozila | uppercase }}</div>
+				</div>	
+			</div>	
+		</div>
+		
+		
+		<hr/>
+		<div><h4><b><u>Vaga</u></b></h4></div>
+		<div class="cf">
+			<div class="one-half push-left">
+				<div class="cf">
+					<div class="one-half push-left"><b>Bruto:</b></div>
+					<div class="one-half push-right text-right right-padding">{{ last_measurement.bruto}} kg <i class="fa fa-balance-scale fa-fw"></i></div>
+				</div>		
+				<div class="cf">
+					<div class="one-half push-left"><b>Tara:</b></div>
+					<div class="one-half push-right text-right right-padding">{{ last_measurement.tara}} kg <i class="fa fa-balance-scale fa-fw"></i></div>
+				</div>
+				<div class="cf" >
+					<div class="one-half push-left " style="font-size:16px;font-weight:bolder"><b>Neto:</b></div>
+					<div class="one-half push-right text-right right-padding"><span style="font-size:16px;font-weight:bolder">{{ last_measurement.neto}} kg</span> <i class="fa fa-balance-scale fa-fw"></i></div>
+				</div>
+				
+			
+		
+			
+			
+		</div>	
+		
+		
+		
+		
+		
+		<div clss="cf" style="width:100%;position:absolute;bottom:0%">
+			<div class="one-third push-left text-center">Magacioner<br/><br/>____________________</div>
+			<div class="one-third push-left text-center">&nbsp;<br/><br/>&nbsp;</div>
+			<div class="one-third push-right text-center">Odgovorno lice/Vozac<br/><br/>____________________</div>
+		</div>
+	</div>
+	
+</div>
+    
+    
+</div>
+			

@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en" ng-app="_raiffisenApp">
+<head>
+	<meta charset="UTF-8">
+	<title>Raiffeisen Agro Doo</title>
+
+	<!-- Bootstrap CSS Modules -->
+        <link rel="stylesheet" type="text/css" href="app/public/css/smartadmin-production.min.css"  media="all">
+        <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css" media="all">
+        <link rel="stylesheet" type="text/css" href="node_modules/font-awesome-4.4.0/css/font-awesome.min.css"  media="all">
+        <link rel="stylesheet" type="text/css" href="app/public/css/ng_animation.css">
+        <link rel="stylesheet" type="text/css" href="app/public/css/open_sans.css">
+	<link rel="stylesheet" type="text/css" href="app/public/css/micro_square.css">
+        <link rel="stylesheet" type="text/css" href="node_modules/angular-datatables/dist/plugins/bootstrap/datatables.bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="app/public/css/jquery-ui.min.css">
+        <link rel="stylesheet" type="text/css" href="app/public/css/dataTables.jqueryui.min.css">
+        <link rel="stylesheet" type="text/css" href="app/public/css/awesome-bootstrap-checkbox.css">
+	 <link rel="stylesheet" type="text/css" href="app/public/jquery-ui-1.11.4.custom/jquery-ui.theme.min.css">
+        <link rel="stylesheet" type="text/css" href="app/public/css/style.css">
+	  
+	
+
+	<link rel="stylesheet" href="demo.css">
+
+	<script src="build/demo.js"></script>
+
+</head>
+<body data-ng-controller="mainController as mc" >
+
+
+
+
+<!--PRINT AREA-->
+	<div class="print_area">
+		 
+	</div>
+<!-- /PRINT AREA -->
+	
+<!-- LOGIN FORM-->
+	<div style="background:#EEEEEE;position:absolute;width:100%;min-height:100%;z-index:1000" ng-hide="hideLogin">
+		<div class="login_wrapper smart-form">
+			<form  id="login_form" class="form-horizontal" method="post" name="login_form"  ng-submit="loginUser()" >
+				<div class="row">
+					<section class="col col-sm-4 set_overflow" style="position:relative" >
+						<label class="full_right">
+						<img src="app/public/img/raiffeisen_blogo.png" width="105" style="margin:0 auto;display:block" >
+							</label>
+					</section>
+					<div class="col col-sm-8">
+						<div class="row">
+							<smart-input section-class="col col-sm-12 fixsection set_overflow" label-class="input full_left" icon="icon-prepend fa fa-user for_infobox" name="username" model="autent.username" maxlength="15"  placehold="Username"></smart-input>         
+						</div>
+						<div class="row">
+							<smart-input section-class="col col-sm-12 fixsection set_overflow" type="password" label-class="input full_right" icon="icon-prepend fa fa-key for_infobox" name="password" model="autent.password" maxlength="15"  placehold="Password"></smart-input>               
+						</div>
+						<div class="row">
+							<section class="col-sm-offset-6 col col-sm-6 fixsection set_overflow">
+								<label class="input full_left">
+									<button type="submit" class="btn btn-sm btn-primary pull-right" id="unos_robe" style="margin:0px;margin-left:10px" >Potvrdi</button>
+								</label>
+								<i class="fa fa-cog fa-2x fa-spin pull-right ajax_load_visibility"></i>
+							</section>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<!--/LOGIN FORM END-->
+	
+	
+
+	<!-- disposition -->
+<div data-ng-show="disposition_view" style="top:0%;position:fixed;width:100%;height:100%;background-color:rgba(0,0,0, 0.6);z-index:5">
+	<div style="width:700px;background:#fff;height:800px;margin:0 auto;margin-top:5%">
+		<div class="form-header font-md font-white right-side prijem_merkantila_container_header" >
+            <i class="fa fa-truck" ></i>  <b>Dispozicija br: {{ d_data.osnovni_podaci[0].dispozicija_id }}</b>
+            <span data-ng-click="dispositionViuwer()"><i class="fa fa-times" ></i></span>
+            <span data-ng-click="d_print()" style="margin-right:1px"><i class="fa fa-print" ></i></span>
+        </div>
+        <div class="disposition_d">
+			<img src="app/public/img/images/raiffeisen_redovan2.png" width="180" alt="Raiffeisen Agro" />
+			<center><h4>Dispozicija - Nalog za utovar br: {{ d_data.osnovni_podaci[0].dispozicija_id }} </h4></center>
+			<b>Dokument kreirao/la:</b>  {{ d_data.osnovni_podaci[0].name }} <b>Dana:</b> {{ d_data.osnovni_podaci[0].datum | date: "dd.MM.yyyy" }}<br/><br/>
+			<b>Nalog za utovar iz magacina {{ d_data.osnovni_podaci[0].wearehouse_name }} za:</b><br/>
+			<b>Naziv firme/gazdinstva:</b> {{ d_data.osnovni_podaci[0].firm_name }}<br/>
+			<b>Adresa i mesto:</b> {{ d_data.osnovni_podaci[0].client_address }}, {{ d_data.osnovni_podaci[0].place }}<br/><br/>
+
+		   <div data-ng-repeat="vozilo in d_data.vozila">
+			   <hr />
+				<div>
+				<b><u>Vozilo: {{ $index + 1 }}</u></b> 
+				<label class="label label-success disp_nostamp" ng-show="vozilo.realizovano==='y'">Realizovano</label> 
+				<button ng-show="vozilo.realizovano==='n'" class="btn btn-primary btn-xs disp_nostamp" style="margin:0px"  data-ng-click="realizacijaStavkeDispozicije(vozilo)">Realizuj</button></div>
+				<div class="disp_nostamp">
+					<b>Vozac i registracija:</b> 
+					<span ng-show="vozilo.realizovano==='y'">{{ vozilo.ime_vozaca }}</span>, <span ng-show="vozilo.realizovano==='y'">{{ vozilo.reg_table | uppercase}}</span><br/>
+					<span ng-show="vozilo.realizovano==='n'">
+						<input type="text" class="" ng-model="vozilo.ime_vozaca"> 
+						<input type="text" class="" ng-model="vozilo.reg_table">
+						<button class="btn btn-primary btn-xs" style="margin-top:0px" data-ng-click="changeVozilo($event, vozilo.ime_vozaca, vozilo.reg_table, vozilo.vozilo_id)">izmeni</button>
+					</span>
+					
+				</div>
+				<div class="disp_stamp">{{ vozilo.ime_vozaca }}, {{ vozilo.reg_table | uppercase}}</div><br/>
+				<b>Datum utovara:</b> {{ vozilo.datum_utovara | date: "dd.MM.yyyy" }}<br/>
+				<b>Krajnja mesta otpreme:</b> {{ vozilo.krajnja_mesta }}<br/><br/>
+				<table cellpadding="5" cellspacing="5" width="100%" class="d_tabla" style="font-size:12px">
+					<thead>
+						<tr>
+							<td width="45%"><b>Naziv robe</b></td>
+							<td width="7%"><b>Lot</b></td>
+							<td width="28%" align="right"><b>Kolicina</b></td>
+							<td width="20%"><b>M.J</b></td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr data-ng-repeat="roba in vozilo.roba">
+							<td width="45%">{{ $index+1 }}) {{ roba.goods_name }}</td>
+							<td width="28%" align="right" ng-show="vozilo.realizovano==='n'"><span class="disp_nostamp"><input type=text ng-model="roba.lot" ></span><span class="disp_stamp">{{roba.lot}}</span></td>
+							<td width="7%" ng-show="vozilo.realizovano==='y'">&nbsp;{{ roba.lot }}</td>
+							<td width="28%" align="right" ng-show="vozilo.realizovano==='n'">
+								<span class="disp_nostamp">
+									<input type=text ng-model="roba.kolicina" > 
+									<button class="btn btn-primary btn-xs" data-ng-click="changeQuantity($event, roba.kolicina, roba.lot, roba.stavka_id)">izmeni</button>
+								</span>
+								<span class="disp_stamp">{{ roba.kolicina }}</span>
+							</td>
+							<td width="28%" align="right" ng-show="vozilo.realizovano==='y'">{{ roba.kolicina }} </td>
+							<td width="20%">{{ roba.measurement_unit }}</td>
+						</tr>
+					</tbody>
+				</table>
+			 </div>   
+        </div>
+	</div>
+</div>
+<!-- disposition -->
+	
+
+	
+			
+				
+					
+							
+	
+<!-- Display Setup Panel -->
+<div style="">
+
+</div><!-- /Display Setup Panel -->
+<!-- Main Wrapper -->
+<div class="mainWrapper cf" style="overflow-x: hidden">
+    <!-- Header -->
+    <header class="appheader" data-ng-class="{'fixedh':headerFixed===true}" >
+        <div id="logo-group">
+            <span></span>
+            <img src="app/public/img/images/raiffeisen_logo.png"   />
+        </div>
+        <div id="login-group cf" style="float:left;margin-top:10px">
+            <div style="background:#6B7652;float:left;color:#FFF;border-radius:3px;padding:1px 4px;float:left;margin-right:4px">
+                <i class="fa fa-user" style="font-size:23px"></i>
+            </div>
+            <div style="float:left;font-size:12px;line-height:1.21;color:#6B7652">
+               <b>{{ login_data.user_name }}</b> ({{ login_data.role }})<br />
+               <b>{{ login_data.wearehouse_name }}</b> 
+            </div>
+
+        </div>
+       
+        <div id="edit-group" style="position:relative">
+            <span>	
+            </span>
+            <i class="fa fa fa-bell fa-lg fa-border icon-grey dispozicija" title="Dispozicije" data-ng-click="setPanel()"><em class="badge bg-color-red bounceIn animated">{{badge_num}} </em></i>
+            <i class="fa fa-sign-out fa-lg fa-border icon-grey" title="Odjava sa aplikacije" data-ng-click="logoutUser()"></i>
+            <i class="fa fa-cog fa-lg fa-border icon-grey" title="Podešavanje teme" ></i>
+            <style>
+				
+			</style>
+            <div class="disposition_container" ng-show="dispozicija_panel">
+            
+            	<ul>
+            		<li class="cf" ng-repeat="disp in disposition">
+						<div class="col col-sm-8" >
+							<label>Dispozicija br:{{ disp.dispozicija_id }}</label>
+							<div style="font">Datum: {{ disp.datum | date: "dd.MM.yyyy" }}</div>
+							<div style="font">Kupac: {{ disp.firm_name }}</div>
+						</div>
+           				<div class="col col-sm-4 text-center" >
+							<button class="btn btn-primary" data-ng-click="viewDisposition(disp.dispozicija_id)"><i class="fa fa-envelope ikonica_mala"></i></button>
+						</div> 	
+            		</li>
+            	</ul>
+            
+            </div>
+        </div>
+    </header><!-- /Header -->
+    <!-- Aside -->
+    <div data-ng-class="{'aopen':menuOpen===true , 'aclose':menuOpen===false, 'fixedh':headerFixed===true, 'fixed':headerFixed===true}" class="aside"  >
+        <!--<span style="font-family:'Open Sans', Helvetica, Arial, sans-serif;font-weight: 800;-webkit-text-stroke: 1px #6B7652;-webkit-text-fill-color: #FFF;text-shadow: 0px 0px 1px #6B7652 ;color:#fff;font-size:18px;text-rendering: optimizeLegibility;">Raiffeisen Agro</span>-->
+        <ul data-ng-class="{'menu_b':menuOpen===true , 'menu_a':menuOpen===false}">
+            <li><a href="#/dashboard" data-ng-class="menuClass('')"><i class="fa fa-home fa-lg"></i> <span>Dashboard</span></a></li>
+            <li>
+                <a href=""  data-ng-disabled="true" data-ng-class="menuClass(['ulaz_robe/ulaz_merkantila','ulaz_robe/repromaterijal'])"><i class="fa fa-download fa-lg" ></i> <span>Ulaz robe</span></a>
+                <ul class="submenu">
+                    <li><a href="#/ulaz_robe/ulaz_merkantila"><span>Merkantila</span></a></li>
+                    <li><a href="#/ulaz_robe/ulaz_repromaterijal"><span>Repromaterijal</span></a></li>
+                </ul>
+            </li>
+            <li>
+                <a href=""  data-ng-disabled="true"  data-ng-class="menuClass(['izlaz_robe/merkantila','izlaz_robe/repromaterijal'])"><i class="fa fa-upload fa-lg"></i> <span>Izlaz Robe</span></a>
+                <ul class="submenu">
+                    <li><a href="#/izlaz_robe/merkantila"><span>Merkantila</span></a></li>
+                    <li><a href="#/izlaz_robe/repromaterijal"><span>Repromaterijal</span></a></li>
+                </ul>
+            </li>
+            <li>
+            	<a href=""  data-ng-disabled="true" ng-class="menuClass(['usluzno_merenje,usluzno_pregled'])"><i class="fa fa-truck fa-lg"></i> <span>Uslužno Merenje</span></a>
+            	<ul class="submenu" style="font-size:12px">
+                    <li><a href="#/usluzno_merenje"><span>Merenje</span></a></li>
+                   <!-- <li><a href="#/usluzno_pregled"><span>Pregled prijemnica</span></a></li> -->
+                    <li><a href="#/usluzno_drugi"><span>Pregled prijemnica</span></a></li>
+                </ul>
+            </li>
+			<li>
+                <a href=""  data-ng-disabled="true" data-ng-class="menuClass(['pregled/pregled_prijema_merkantila','pregled/pregled_otpreme_merkantila','pregled/pregled_prijema_repromaterijal','pregled/pregled_otpreme_merkantila'])"><i class="fa fa-eye fa-lg"></i> <span>Pregled Robe</span></a>
+                <ul class="submenu" style="font-size:12px">
+                    <li><a href="#/pregled/pregled_prijema_merkantila"><span>Prijem merkanktile </span></a></li>
+                    <li><a href="#/pregled/pregled_otpreme_merkantila"><span>Otprema merkanktile</span></a></li>
+					<li><a href="#/pregled/pregled_prijema_repromaterijal"><span>Prijem repromaterijala</span></a></li>
+                    <li><a href="#/pregled/pregled_otpreme_repromaterijal"><span>Otprema repromaterijala</span></a></li>
+                </ul>
+            </li>
+            <li>
+                <a href=""  data-ng-disabled="true" data-ng-class="menuClass(['stanje_magacina_repromaerijal','pregled/pregled_otpreme_merkantila','pregled/pregled_prijema_repromaterijal','pregled/pregled_otpreme_merkantila'])"><i class="fa fa fa-pie-chart fa-lg"></i><span>Pregled Robe</span></a>
+                <ul class="submenu" style="font-size:12px">
+                    <li><a href="#/stanje_magacina_mekantila"><span>Stanje merkanktile </span></a></li>
+                    <li><a href="#/stanje_magacina_repromaerijal"><span>Stanje repromaterijala</span></a></li>
+                </ul>
+            </li>
+            <li><a href="#/dobavljaci_kupci" ng-class="menuClass('dobavljaci_kupci')"><i class="fa fa-user-plus fa-lg"></i> <span>Dobavljači/Kupci</span></a></li>
+            
+            
+            
+            <li class="close_open" ><a href="javascript:void(0)" class="close" ng-disabled="true" ng-click="openMenu();"><i ng-class="{'fa-arrow-circle-left':menuOpen===true, 'fa-arrow-circle-right':menuOpen===false}" class="fa  hit fa-lg"></i></a></li>
+        </ul>
+    </div><!-- /Aside -->
+    <!-- Bside -->
+    <div data-ng-class="{'bopen':menuOpen===true , 'bclose':menuOpen===false, 'fixedh':headerFixed===true}" class="bside"  >
+        <div data-ng-view style="width:100%;height:100%" class="slide-animation" style="">
+
+        </div>
+    </div><!-- Bside -->
+</div><!-- /Main Wrapper -->
+	<!-- jQuery JS Modules -->
+<script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js" ></script>
+<script type="text/javascript" src="node_modules/jquery-ui/jquery-ui.min.js" ></script>
+<script type="text/javascript" src="node_modules/jquery-transform/jquery.transform2d.js"></script>
+	<script type="text/javascript" src="node_modules/jquery-ui/ui.datepicker-sr-SR.min.js" ></script>
+	<script type="text/javascript" src="node_modules/underscore/underscore-min.js" ></script>
+
+<!-- Angular JS Modules -->
+    <script type="text/javascript" src="node_modules/angular/angular.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-route/angular-route.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-sanitize/angular-sanitize.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-animate/angular-animate.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-resource/angular-resource.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-messages/angular-messages.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-cookies/angular-cookies.min.js"></script>
+
+<!-- Datatables JS Modules -->
+    <script type="text/javascript" src="node_modules/datatables.net/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="node_modules/angular-datatables/vendor/datatables-tabletools/js/dataTables.tableTools.js"></script>
+    <script type="text/javascript" src="node_modules/angular-datatables/dist/angular-datatables.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-datatables/dist/plugins/bootstrap/angular-datatables.bootstrap.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-datatables/dist/plugins/colreorder/angular-datatables.colreorder.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-datatables/dist/plugins/dataTablescolumnFilter/jquery.dataTables.columnFilter.js"></script>
+    <script type="text/javascript" src="node_modules/angular-datatables/dist/plugins/columnfilter/angular-datatables.columnfilter.js"></script>
+    <script type="text/javascript" src="node_modules/angular-datatables/dist/plugins/colvis/angular-datatables.colvis.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-datatables/dist/plugins/fixedcolumns/angular-datatables.fixedcolumns.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-datatables/dist/plugins/fixedheader/angular-datatables.fixedheader.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-datatables/dist/plugins/scroller/angular-datatables.scroller.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-datatables/dist/plugins/tabletools/angular-datatables.tabletools.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-datatables/dist/plugins/dataTablescolumnFilter/dataTables.lightColumnFilter.min.js"></script>
+    <script type="text/javascript" src="node_modules/angular-datatables/dist/plugins/light_columnfilter/dataTables.lightColumnFilter.js"></script>
+    <script type="text/javascript" src="node_modules/angular-datatables/dist/plugins/buttons/dataTables.buttons.js"></script>
+    <script type="text/javascript" src="node_modules/angular-datatables/dist/plugins/buttons/angular-datatables.buttons.js"></script>
+    <script type="text/javascript" src="node_modules/angular-datatables/dist/plugins/responsive/dataTables.responsive.js"></script>
+
+<!-- App Module -->
+    <script type="text/javascript" src="app/app.js"></script>
+
+<!-- App Controller JS Modules -->
+    <script type="text/javascript" src="app/controllers/mainController.js"></script>
+    <script type="text/javascript" src="app/controllers/wearehouseController.js"></script>
+    <script type="text/javascript" src="app/controllers/userController.js"></script>
+    <script type="text/javascript" src="app/controllers/clientController.js"></script>
+    <script type="text/javascript" src="app/controllers/editUserController.js"></script>
+    <script type="text/javascript" src="app/controllers/editClientController.js"></script>
+    <script type="text/javascript" src="app/controllers/goodsController.js"></script>
+    <script type="text/javascript" src="app/controllers/editGoodsController.js"></script>
+	<script type="text/javascript" src="app/controllers/prijemMerkantilaController.js"></script>
+	<script type="text/javascript" src="app/controllers/prijemRepromaterijalController.js"></script>
+	<script type="text/javascript" src="app/controllers/pregledPrijemMerkantilaController.js"></script>
+	<script type="text/javascript" src="app/controllers/otpremaMerkantilaController.js"></script>
+	<script type="text/javascript" src="app/controllers/pregledOtpremaMerkantilaController.js"></script>
+	<script type="text/javascript" src="app/controllers/prijemRepromaterijalController.js"></script>
+	<script type="text/javascript" src="app/controllers/otpremaRepromaterijalController.js"></script>
+	<script type="text/javascript" src="app/controllers/pregledPrijemRepromaterijalController.js"></script>
+	<script type="text/javascript" src="app/controllers/pregledOtpremaRepromaterijalController.js"></script>
+	<script type="text/javascript" src="app/controllers/usluznoMerenjeController.js"></script>
+	<script type="text/javascript" src="app/controllers/usluznoMerenjePregledController.js"></script>
+	<script type="text/javascript" src="app/controllers/usluznoDrugiController.js"></script>
+    <script type="text/javascript" src="app/controllers/stanje-magacina-ctrl.js"></script>
+
+
+<!-- App Directives JS Modules -->
+    <script type="text/javascript" src="app/directives/winresize.js"></script>
+    <script type="text/javascript" src="app/directives/isnumber.js"></script>
+    <script type="text/javascript" src="app/directives/form_directive.js"></script>
+    <script type="text/javascript" src="app/directives/smart_form_directive.js"></script>
+    <script type="text/javascript" src="app/directives/usluznoClientList.js"></script>
+
+<!-- App Service JS Modules -->
+    <script type="text/javascript" src="app/services/mine_service.js"></script>
+    <script type="text/javascript" src="app/services/google_map_service.js"></script>
+    <script type="text/javascript" src="app/services/warehousesFactory.js"></script>
+    <script type="text/javascript" src="app/services/placesFactory.js"></script>
+    <script type="text/javascript" src="app/services/usersFactory.js"></script>
+    <script type="text/javascript" src="app/services/error_service.js"></script>
+    <script type="text/javascript" src="app/services/clientsFactory.js"></script>
+    <script type="text/javascript" src="app/services/infoBox_service.js"></script>
+    <script type="text/javascript" src="app/services/goodsFactory.js"></script>
+	<script type="text/javascript" src="app/services/mineFactory.js"></script>
+	<script type="text/javascript" src="app/services/prijemMerkantilaFactory.js"></script>
+	<script type="text/javascript" src="app/services/prijemMerkantilaPregledFactory.js"></script>
+	<script type="text/javascript" src="app/services/otpremaMerkantilaFactory.js"></script>
+	<script type="text/javascript" src="app/services/otpremaMerkantilaPregledFactory.js"></script>
+	<script type="text/javascript" src="app/services/prijemMerkantilaPregledFactory.js"></script>
+	<script type="text/javascript" src="app/services/otpremaMerkantilaPregledFactory.js"></script>
+	<script type="text/javascript" src="app/services/json_to_cvs_service.js"></script>
+	
+	<script type="text/javascript" src="app/services/prijemRepromaterijalFactory.js"></script>
+	<script type="text/javascript" src="app/services/otpremaRepromaterijalFactory.js"></script>
+	<script type="text/javascript" src="app/services/prijemRepromaterijalPregledFactory.js"></script>
+	<script type="text/javascript" src="app/services/otpremaRepromaterijalPregledFactory.js"></script>
+	<script type="text/javascript" src="app/services/usluznoMerenjeFactory.js"></script>
+	<script type="text/javascript" src="app/services/usluznoMerenjePregledFactory.js"></script>
+	<script type="text/javascript" src="app/services/usluznoDrugiFactory.js"></script>
+    <script type="text/javascript" src="app/services/stanje_magacina_factory.js"></script>
+
+
+	
+
+<!-- App Filters JS Modules -->
+    <script type="text/javascript" src="app/custom_filters/custom_filters.js"></script>
+    <script type="text/javascript" src="app/custom_filters/validEmailFilter.js"></script>
+</body>
+
+
+
+</html>

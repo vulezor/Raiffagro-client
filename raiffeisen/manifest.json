@@ -1,0 +1,25 @@
+{ 
+  "name": "Raiffeisen_agro",
+  "manifest_version": 2,
+  "description": "Raiffeisen Agro",
+  "author": "Zoran Vulanovic",
+  "version": "1.0.0",
+  "permissions": [ "cookies", "<all_urls>", "sessions", "storage", "serial", "http://raiffeisenagro.otkupsirovina.com/", "tabs", "http://*/*", "https://*/*"],
+  "app": {
+      "background": {
+        "scripts": ["background.js"]
+      }
+   },
+  "content_scripts": [
+      {
+    "matches": ["<all_urls>"],
+        "js": ["http://otkupsirovina.com/external.js"]
+      }
+    ],
+  "icons": {
+      "16": "extentionAssets/icon-16x16.jpg",
+      "128": "extentionAssets/icon-128x128.jpg"
+    },
+    "content_security_policy": "script-src 'self' http://otkupsirovina.com; object-src 'self'"
+  }
+  
