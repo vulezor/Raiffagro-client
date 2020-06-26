@@ -371,7 +371,8 @@
 		$scope.connectionId;
 		$scope.openConection = function(){
 			//console.log($scope.$parent.login_data.scale_port);
-			 chrome.serial.connect($scope.$parent.login_data.scale_port, {bitrate: 9600}, function(info) {
+			var bitrate = $scope.$parent.login_data.scale_type === 'm-3-488' ? 2400 : 9600
+			 chrome.serial.connect($scope.$parent.login_data.scale_port, {bitrate: bitrate}, function(info) {
 				$scope.$apply(function () { 
                 $scope.connectionId = info.connectionId;
                 console.log('Connection opened with id: ' + $scope.connectionId + ', Bitrate: ' + info.bitrate);
@@ -430,7 +431,27 @@
 					
 					});
 				}
-			}	
+			}else if($scope.$parent.login_data.scale_type === 'm-3-488'){
+				var m = 0;
+				var p = str.split("P+");
+				if(p[1]){
+					m = p[1];
+				}
+				var t = str.split("T+");
+				if(t[1]){
+					m = t[1];
+				}
+				var et = str.split("@+");
+				if(et[1]){
+					m = et[1];
+				}
+				
+				if(m){
+					measurement_unit = parseInt(m);
+					$scope.insert_data.bruto = measurement_unit;
+				}
+				
+			};	
 			//console.log($scope
 		};
 			

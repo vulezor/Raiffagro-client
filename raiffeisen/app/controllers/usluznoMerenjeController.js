@@ -42,7 +42,8 @@
 		$scope.connectionId;
 		$scope.openConection = function(){
 			//console.log($scope.$parent.login_data.scale_port);
-			 chrome.serial.connect($scope.$parent.login_data.scale_port, {bitrate: 9600}, function(info) {
+			var bitrate = $scope.$parent.login_data.scale_type === 'm-3-488' ? 2400 : 9600
+			 chrome.serial.connect($scope.$parent.login_data.scale_port, {bitrate: bitrate}, function(info) {
 				$scope.$apply(function () { 
                 $scope.connectionId = info.connectionId;
                 console.log('Connection opened with id: ' + $scope.connectionId + ', Bitrate: ' + info.bitrate);
@@ -64,36 +65,79 @@
 				var bufView = new Uint8Array(info.data);
 				var encodedString = String.fromCharCode.apply(null, bufView);
 				var str = decodeURIComponent(encodedString);
-                //console.log(str);
+                var bufView = new Uint8Array(info.data);
+			var encodedString = String.fromCharCode.apply(null, bufView);
+			var str = decodeURIComponent(encodedString);
+
+			if($scope.$parent.login_data.scale_type === 'w2110'){
 				if (str.charAt(str.length-1) === '\n') {
-				  stringReceived = str.substring(0, str.length-1);
-				  onLineReceived(stringReceived);
-				  
-				 measurement_unit = '';
+				stringReceived = str.substring(0, str.length-1);
+				onLineReceived(stringReceived);
+				
+				measurement_unit = '';
 					
 				} else {
-				 
+				
 					measurement_unit = str;
 					
 				}
 				$scope.$apply(function () { 
-					if($scope.$parent.login_data.scale_type === 'w2110'){
+					
 						$scope.wagaW ();
-					};	
+					
 				});
+			} else if($scope.$parent.login_data.scale_type === 'mx100'){
+				if(str.trim().length>0){
+					console.log("string", str)
+					measurement_unit= str.replace(/[^\d.-]/g, '');
+					console.log("string replace", measurement_unit);
+					measurement_unit= measurement_unit.substring(0, measurement_unit.length - 1);
+					//console.log("string replace1", measurement_unit);
+					//console.log("string replace2", measurement_unit.trim().length);
+					measurement_unit= Number(measurement_unit)>0 && !isNaN(parseInt(measurement_unit)) ? parseInt(measurement_unit) : 0;
+					$scope.$apply(function () { 
+						
+						$scope.wagaW ();
+					
+					});
+				}
+			}else if($scope.$parent.login_data.scale_type === 'm-3-488'){
+				var m = 0;
+				var p = str.split("P+");
+				if(p[1]){
+					m = p[1];
+				}
+				var t = str.split("T+");
+				if(t[1]){
+					m = t[1];
+				}
+				var et = str.split("@+");
+				if(et[1]){
+					m = et[1];
+				}
+				
+				if(m){
+					measurement_unit = parseInt(m);
+					$scope.vaga = measurement_unit;
+				}
+			};	
 				//console.log($scope.measurement_unit);
 		};
 			
 		//---------------------------------------------------------------------------------------------------------
 		
 		$scope.wagaW = function(){
+			if($scope.$parent.login_data.scale_type === 'w2110'){
                     measurement_unit = measurement_unit.replace("*", "").trim();
                     measurement_unit = measurement_unit.replace("M", "").trim();
                     measurement_unit = measurement_unit.replace("G", "").trim();
                     if( measurement_unit !== "" ){
 					  // console.log(measurement_unit);
                        $scope.vaga = measurement_unit;
-                    }
+					}
+				} else if($scope.$parent.login_data.scale_type === 'mx100'){
+					$scope.vaga  = measurement_unit;
+			}
 		};
 		
 		//---------------------------------------------------------------------------------------------------------
