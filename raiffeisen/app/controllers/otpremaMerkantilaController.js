@@ -414,6 +414,16 @@
 						
 						});
 					}
+				}else if($scope.$parent.login_data.scale_type === 'm-0-67'){
+					if(str.trim().length>0){
+						console.log("string", str)
+						measurement_unit= str.replace(/[^\d.-]/g, '');
+						measurement_unit= Number(measurement_unit)>0 && !isNaN(parseInt(measurement_unit)) ? parseInt(measurement_unit) : 0;
+						$scope.$apply(function () { 
+							$scope.insert_data.tara = measurement_unit;
+							$scope.second_insert_data.bruto = measurement_unit;
+						});
+					}
 				}else if($scope.$parent.login_data.scale_type === 'm-3-488'){
 				
 					
