@@ -56,6 +56,7 @@ window.onload=cookieinfo;*/
 					$interval(function(){ $scope.getDispozicije(); }, 60000);
 					chrome.storage.local.set(dataObj, function() { /*...*/ }); // set item into local storage
 					$scope.login_data = msg.login_data;
+					mainService.login_data  = msg.login_data;
 					$scope.hideLogin = true;
 					chrome.storage.local.get('session_id', function (items) {
 						var results = items['session_id']; console.log(results); 

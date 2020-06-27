@@ -1,7 +1,9 @@
 (function(){
-	var prijemMerkantilaController = function($scope, $filter, $location, infoboxService, prijemMerkantilaFactory, clientsFactory, mineFactory, errorService){
+	var prijemMerkantilaController = function($scope, $filter, $location, infoboxService, prijemMerkantilaFactory, clientsFactory, mineFactory, mainService, errorService){
 		
-		$scope.insert_data = {};
+		$scope.insert_data = {
+			bruto:0
+		};
 		$scope.goods_type = {};
 		$scope.goods_name = {};
 		$scope.clients = []; 
@@ -370,16 +372,16 @@
 		
 		$scope.connectionId;
 		$scope.openConection = function(){
-			//console.log($scope.$parent.login_data.scale_port);
-			var bitrate = $scope.$parent.login_data.scale_type === 'm-3-488' ? 2400 : 9600
-			 chrome.serial.connect($scope.$parent.login_data.scale_port, {bitrate: bitrate}, function(info) {
-				$scope.$apply(function () { 
-                $scope.connectionId = info.connectionId;
-                console.log('Connection opened with id: ' + $scope.connectionId + ', Bitrate: ' + info.bitrate);
-                chrome.serial.onReceive.addListener($scope.onReceiveCallback);
-     
-				});
-			});
+		
+				var bitrate = mainService.login_data.scale_type === 'm-3-488' ? 2400 : 9600
+				chrome.serial.connect(mainService.login_data.scale_port, {bitrate: bitrate}, function(info) {
+				   $scope.$apply(function () { 
+						$scope.connectionId = info.connectionId;
+						console.log('Connection opened with id: ' + $scope.connectionId + ', Bitrate: ' + info.bitrate);
+						chrome.serial.onReceive.addListener($scope.onReceiveCallback);
+				   });
+			   });
+		
 		}
 		
 		//---------------------------------------------------------------------------------------------------------
@@ -399,7 +401,7 @@
 			var encodedString = String.fromCharCode.apply(null, bufView);
 			var str = decodeURIComponent(encodedString);
 
-			if($scope.$parent.login_data.scale_type === 'w2110'){
+			if(mainService.login_data.scale_type === 'w2110'){
 				if (str.charAt(str.length-1) === '\n') {
 				stringReceived = str.substring(0, str.length-1);
 				onLineReceived(stringReceived);
@@ -416,7 +418,7 @@
 						$scope.wagaW ();
 					
 				});
-			}else if($scope.$parent.login_data.scale_type === 'mx100'){
+			}else if(mainService.login_data.scale_type === 'mx100'){
 				if(str.trim().length>0){
 					console.log("string", str)
 					measurement_unit= str.replace(/[^\d.-]/g, '');
@@ -429,39 +431,38 @@
 					
 					});
 				}
-			}else if($scope.$parent.login_data.scale_type === 'm-0-67'){
+			}else if(mainService.login_data.scale_type === 'm-0-67'){
 				if(str.trim().length>0){
 					console.log("string", str)
 					measurement_unit= str.replace(/[^\d.-]/g, '');
 					measurement_unit= Number(measurement_unit)>0 && !isNaN(parseInt(measurement_unit)) ? parseInt(measurement_unit) : 0;
 					$scope.$apply(function () { 
-						
 						$scope.insert_data.bruto = measurement_unit;
-					
 					});
 				}
-			}else if($scope.$parent.login_data.scale_type === 'm-3-488'){
-				var m = 0;
-				var p = str.split("P+");
-				if(p[1]){
-					m = p[1];
+			
+			}else if(mainService.login_data.scale_type === 'm-3-488'){
+				if(str.length>1){
+					var m = 0;
+					var p = str.split("P+");
+					if(p[1]){
+						m = p[1];
+					}
+					var t = str.split("T+");
+					if(t[1]){
+						m = t[1];
+					}
+					var et = str.split("@+");
+					if(et[1]){
+						m = et[1];
+					}
+						measurement_unit = parseInt(m);
+						$scope.$apply(function(){
+							$scope.insert_data.bruto = measurement_unit;
+						})
+						last_received =  m;
 				}
-				var t = str.split("T+");
-				if(t[1]){
-					m = t[1];
-				}
-				var et = str.split("@+");
-				if(et[1]){
-					m = et[1];
-				}
-				
-				if(m){
-					measurement_unit = parseInt(m);
-					$scope.insert_data.bruto = measurement_unit;
-				}
-				
 			};	
-			//console.log($scope
 		};
 			
 		//---------------------------------------------------------------------------------------------------------
@@ -469,7 +470,7 @@
 		$scope.wagaW = function(){
 			console.log("measurement_unit", measurement_unit)
             /*if(measurement_unit.indexOf('G') == -1 || measurement_unit.indexOf('M') == -1){*/
-				if($scope.$parent.login_data.scale_type === 'w2110'){
+				if(mainService.login_data.scale_type === 'w2110'){
                     measurement_unit = measurement_unit.replace("*", "").trim();
                     measurement_unit = measurement_unit.replace("M", "").trim();
                     measurement_unit = measurement_unit.replace("G", "").trim();
@@ -477,7 +478,7 @@
 					   $scope.insert_data.bruto = measurement_unit;
 					  $scope.second_insert_data.bruto  = measurement_unit;
 					}
-				} else if($scope.$parent.login_data.scale_type === 'mx100'){
+				} else if(mainService.login_data.scale_type === 'mx100'){
 						$scope.insert_data.bruto = measurement_unit;
 				}
 			// if(measurement_unit.indexOf('0G') == -1){
@@ -506,7 +507,7 @@
 		// 		var encodedString = String.fromCharCode.apply(null, bufView);
 		// 		var str = decodeURIComponent(encodedString);
 				
-		// 		if($scope.$parent.login_data.scale_type === 'w2110'){
+		// 		if(mainService.login_data.scale_type === 'w2110'){
 		// 			if (str.charAt(str.length-1) === '\n') {
 		// 			stringReceived = str.substring(0, str.length-1);
 		// 			onLineReceived(stringReceived);
@@ -522,7 +523,7 @@
 		// 					$scope.wagaW ();
 						
 		// 			});
-		// 		}else if($scope.$parent.login_data.scale_type === 'mx100'){
+		// 		}else if(mainService.login_data.scale_type === 'mx100'){
 		// 			//console.log()
 		// 			//console.log("string", str)
 		// 			measurement_unit= str.replace(/[^\d.-]/g, '');
@@ -545,14 +546,14 @@
 		// $scope.wagaW = function(){
         //     console.log("measurement_unit", measurement_unit)
         //     /*if(measurement_unit.indexOf('G') == -1 || measurement_unit.indexOf('M') == -1){*/
-		// 		if($scope.$parent.login_data.scale_type === 'w2110'){
+		// 		if(mainService.login_data.scale_type === 'w2110'){
         //             measurement_unit = measurement_unit.replace("*", "").trim();
         //             measurement_unit = measurement_unit.replace("M", "").trim();
         //             measurement_unit = measurement_unit.replace("G", "").trim();
         //             if( measurement_unit !== "" ){
         //                $scope.insert_data.bruto = measurement_unit;
 		// 			}
-		// 		} else if($scope.$parent.login_data.scale_type === 'mx100'){
+		// 		} else if(mainService.login_data.scale_type === 'mx100'){
 		// 			$scope.insert_data.bruto = measurement_unit;
 		// 		}
         //            // 
@@ -583,7 +584,7 @@
 		
 		//---------------------------------------------------------------------------------------------------------
 		
-		if($scope.$parent.login_data.bruto_polje === "zakljucano"){
+		if(mainService.login_data.bruto_polje === "zakljucano"){
 			console.log('zakljucano')
 			$scope.openConection();
 		} else{
@@ -685,7 +686,7 @@
 		}
 	}
 	
-	prijemMerkantilaController.$inject = ['$scope', '$filter', '$location', 'infoboxService', 'prijemMerkantilaFactory', 'clientsFactory', 'mineFactory', 'errorService'];
+	prijemMerkantilaController.$inject = ['$scope', '$filter', '$location', 'infoboxService', 'prijemMerkantilaFactory', 'clientsFactory', 'mineFactory', 'mainService', 'errorService'];
     angular.module('_raiffisenApp').controller('prijemMerkantilaController', prijemMerkantilaController);
 	
 	

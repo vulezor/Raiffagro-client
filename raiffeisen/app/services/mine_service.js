@@ -39,7 +39,9 @@ var mainService = function(){
             }
         });
     };
-	
+    
+    this.login_data = {};
+    
 	this.domainURL = function(){
         return  'https://raiffagro.info/2019/'; //'https://raiffagro.info/2019/';// https://raiffagro.info/2019/
     };

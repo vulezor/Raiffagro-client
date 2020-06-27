@@ -1,5 +1,5 @@
 (function(){
-	var usluznoMerenjeController = function($scope, errorService, usluznoMerenjeFactory, mineFactory, clientsFactory, $filter){
+	var usluznoMerenjeController = function($scope, errorService, usluznoMerenjeFactory, mineFactory, clientsFactory, mainService, $filter){
 		$scope.insert_data = {};
 		$scope.vaga = 0;
 		$scope.clients =[];
@@ -41,9 +41,8 @@
 		
 		$scope.connectionId;
 		$scope.openConection = function(){
-			//console.log($scope.$parent.login_data.scale_port);
-			var bitrate = $scope.$parent.login_data.scale_type === 'm-3-488' ? 2400 : 9600
-			 chrome.serial.connect($scope.$parent.login_data.scale_port, {bitrate: bitrate}, function(info) {
+			var bitrate = mainService.login_data.scale_type === 'm-3-488' ? 2400 : 9600
+			 chrome.serial.connect(mainService.login_data.scale_port, {bitrate: bitrate}, function(info) {
 				$scope.$apply(function () { 
                 $scope.connectionId = info.connectionId;
                 console.log('Connection opened with id: ' + $scope.connectionId + ', Bitrate: ' + info.bitrate);
@@ -69,7 +68,7 @@
 			var encodedString = String.fromCharCode.apply(null, bufView);
 			var str = decodeURIComponent(encodedString);
 
-			if($scope.$parent.login_data.scale_type === 'w2110'){
+			if(mainService.login_data.scale_type === 'w2110'){
 				if (str.charAt(str.length-1) === '\n') {
 				stringReceived = str.substring(0, str.length-1);
 				onLineReceived(stringReceived);
@@ -86,7 +85,7 @@
 						$scope.wagaW ();
 					
 				});
-			} else if($scope.$parent.login_data.scale_type === 'mx100'){
+			} else if(mainService.login_data.scale_type === 'mx100'){
 				if(str.trim().length>0){
 					console.log("string", str)
 					measurement_unit= str.replace(/[^\d.-]/g, '');
@@ -112,33 +111,34 @@
 					
 					});
 				}
-			}else if($scope.$parent.login_data.scale_type === 'm-3-488'){
-				var m = 0;
-				var p = str.split("P+");
-				if(p[1]){
-					m = p[1];
-				}
-				var t = str.split("T+");
-				if(t[1]){
-					m = t[1];
-				}
-				var et = str.split("@+");
-				if(et[1]){
-					m = et[1];
-				}
-				
-				if(m){
-					measurement_unit = parseInt(m);
-					$scope.vaga = measurement_unit;
+			}else if(mainService.login_data.scale_type === 'm-3-488'){
+				if(str.length>1){
+					var m = 0;
+					var p = str.split("P+");
+					if(p[1]){
+						m = p[1];
+					}
+					var t = str.split("T+");
+					if(t[1]){
+						m = t[1];
+					}
+					var et = str.split("@+");
+					if(et[1]){
+						m = et[1];
+					}
+						measurement_unit = parseInt(m);
+						$scope.$apply(function(){
+							$scope.vaga = measurement_unit;
+						})
+						
 				}
 			};	
-				//console.log($scope.measurement_unit);
 		};
 			
 		//---------------------------------------------------------------------------------------------------------
 		
 		$scope.wagaW = function(){
-			if($scope.$parent.login_data.scale_type === 'w2110'){
+			if(mainService.login_data.scale_type === 'w2110'){
                     measurement_unit = measurement_unit.replace("*", "").trim();
                     measurement_unit = measurement_unit.replace("M", "").trim();
                     measurement_unit = measurement_unit.replace("G", "").trim();
@@ -146,14 +146,14 @@
 					  // console.log(measurement_unit);
                        $scope.vaga = measurement_unit;
 					}
-				} else if($scope.$parent.login_data.scale_type === 'mx100'){
+				} else if(mainService.login_data.scale_type === 'mx100'){
 					$scope.vaga  = measurement_unit;
 			}
 		};
 		
 		//---------------------------------------------------------------------------------------------------------
 		
-		if($scope.$parent.login_data.bruto_polje === "zakljucano"){
+		if(mainService.login_data.bruto_polje === "zakljucano"){
 			console.log('zakljucano')
 			$scope.openConection();
 		} else{
@@ -281,7 +281,7 @@
 		
 	};
 	
-	usluznoMerenjeController.$inject = ['$scope', 'errorService', 'usluznoMerenjeFactory', 'mineFactory', 'clientsFactory', '$filter'];
+	usluznoMerenjeController.$inject = ['$scope', 'errorService', 'usluznoMerenjeFactory', 'mineFactory', 'clientsFactory', 'mainService', '$filter'];
 	angular.module('_raiffisenApp').controller('usluznoMerenjeController', usluznoMerenjeController);
 	
 	
