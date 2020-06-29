@@ -468,8 +468,6 @@
 		//---------------------------------------------------------------------------------------------------------
 		
 		$scope.wagaW = function(){
-			console.log("measurement_unit", measurement_unit)
-            /*if(measurement_unit.indexOf('G') == -1 || measurement_unit.indexOf('M') == -1){*/
 				if(mainService.login_data.scale_type === 'w2110'){
                     measurement_unit = measurement_unit.replace("*", "").trim();
                     measurement_unit = measurement_unit.replace("M", "").trim();
@@ -481,106 +479,7 @@
 				} else if(mainService.login_data.scale_type === 'mx100'){
 						$scope.insert_data.bruto = measurement_unit;
 				}
-			// if(measurement_unit.indexOf('0G') == -1){
-			// 	if(measurement_unit.indexOf('0M') == -1){   
-			// 		if(measurement_unit != ""){
-			// 			if(measurement_unit != " "){
-			// 				if(measurement_unit.indexOf('G') == -1){
-			// 					if(measurement_unit.indexOf('M') == -1){
-			// 						if(last_received.length === measurement_unit.length){
-			// 							measurement_unit = measurement_unit.replace("*", "").trim()+'0';
-			// 							$scope.last_received = measurement_unit;
-			// 							$scope.insert_data.bruto = measurement_unit;
-			// 						}else {
-			// 							last_received = measurement_unit;
-										
-			// 						}
-			// 					}
-			// 			 }
-			// 		  }
-			// 		}
-			// 	}   
-			//  } 
 		}
-		// $scope.onReceiveCallback = function(info) {
-		// 		var bufView = new Uint8Array(info.data);
-		// 		var encodedString = String.fromCharCode.apply(null, bufView);
-		// 		var str = decodeURIComponent(encodedString);
-				
-		// 		if(mainService.login_data.scale_type === 'w2110'){
-		// 			if (str.charAt(str.length-1) === '\n') {
-		// 			stringReceived = str.substring(0, str.length-1);
-		// 			onLineReceived(stringReceived);
-		// 			measurement_unit = '';
-						
-		// 			} else {
-					
-		// 				measurement_unit = str;
-						
-		// 			}
-		// 			$scope.$apply(function () { 
-						
-		// 					$scope.wagaW ();
-						
-		// 			});
-		// 		}else if(mainService.login_data.scale_type === 'mx100'){
-		// 			//console.log()
-		// 			//console.log("string", str)
-		// 			measurement_unit= str.replace(/[^\d.-]/g, '');
-		// 			//console.log("string replace", measurement_unit);
-		// 			measurement_unit= measurement_unit.substring(0, measurement_unit.length - 1);
-		// 			//console.log("string replace1", measurement_unit);
-		// 			//console.log("string replace2", measurement_unit.trim().length);
-		// 			measurement_unit= parseInt(measurement_unit).length>0 && !isNaN(parseInt(measurement_unit)) ? parseInt(measurement_unit) : 0;
-		// 			$scope.$apply(function () { 
-						
-		// 				$scope.wagaW ();
-					
-		// 			});
-		// 		}
-		// 		//console.log($scope.measurement_unit);
-		// };
-			
-		// //---------------------------------------------------------------------------------------------------------
-		
-		// $scope.wagaW = function(){
-        //     console.log("measurement_unit", measurement_unit)
-        //     /*if(measurement_unit.indexOf('G') == -1 || measurement_unit.indexOf('M') == -1){*/
-		// 		if(mainService.login_data.scale_type === 'w2110'){
-        //             measurement_unit = measurement_unit.replace("*", "").trim();
-        //             measurement_unit = measurement_unit.replace("M", "").trim();
-        //             measurement_unit = measurement_unit.replace("G", "").trim();
-        //             if( measurement_unit !== "" ){
-        //                $scope.insert_data.bruto = measurement_unit;
-		// 			}
-		// 		} else if(mainService.login_data.scale_type === 'mx100'){
-		// 			$scope.insert_data.bruto = measurement_unit;
-		// 		}
-        //            // 
-               
-        //   /*  }*/
-		// 	/*if(measurement_unit.indexOf('0G') == -1){
-		// 		if(measurement_unit.indexOf('0M') == -1){   
-		// 			if(measurement_unit != ""){
-		// 				if(measurement_unit != " "){
-		// 					if(measurement_unit.indexOf('G') == -1){
-		// 						if(measurement_unit.indexOf('M') == -1){
-		// 							if(last_received.length === measurement_unit.length){
-		// 								measurement_unit = measurement_unit.replace("*", "").trim()+'0';
-        //                                 console.log(measurement_unit);
-		// 								$scope.last_received = measurement_unit;
-		// 								$scope.insert_data.bruto = measurement_unit;
-		// 							}else {
-		// 								last_received = measurement_unit;
-										
-		// 							}
-		// 						}
-		// 				 }
-		// 			  }
-		// 			}
-		// 		}   
-		// 	 } */
-		// }
 		
 		//---------------------------------------------------------------------------------------------------------
 		
