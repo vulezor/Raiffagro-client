@@ -43,11 +43,9 @@ var mainService = function(){
     this.login_data = {};
     
 	this.domainURL = function(){
-        return  'https://raiffagro.info/2019/'; //'https://raiffagro.info/2019/';// https://raiffagro.info/2019/
+        return  'https://raiffagro.info/current/';
+       // return 'http://raiffagro.cock/current/';
     };
 };
-
 angular.module('_raiffisenApp').service('mainService', mainService);
-
-
 }());
