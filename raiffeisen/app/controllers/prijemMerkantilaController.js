@@ -401,6 +401,10 @@
 			var encodedString = String.fromCharCode.apply(null, bufView);
 			var str = decodeURIComponent(encodedString);
 
+			if(!isNaN(str)){
+				return;
+			}
+
 			if(mainService.login_data.scale_type === 'w2110'){
 				if (str.charAt(str.length-1) === '\n') {
 				stringReceived = str.substring(0, str.length-1);

@@ -64,6 +64,9 @@
 				var bufView = new Uint8Array(info.data);
 				var encodedString = String.fromCharCode.apply(null, bufView);
 				var str = decodeURIComponent(encodedString);
+				if(!isNaN(str)){
+					return;
+				}
                 var bufView = new Uint8Array(info.data);
 			var encodedString = String.fromCharCode.apply(null, bufView);
 			var str = decodeURIComponent(encodedString);

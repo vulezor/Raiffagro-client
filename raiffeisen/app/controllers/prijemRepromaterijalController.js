@@ -333,6 +333,9 @@
 				var bufView = new Uint8Array(info.data);
 				var encodedString = String.fromCharCode.apply(null, bufView);
 				var str = decodeURIComponent(encodedString);
+				if(!isNaN(str)){
+					return;
+				}
 				if (str.charAt(str.length-1) === '\n') {
 				  stringReceived = str.substring(0, str.length-1);
 				  onLineReceived(stringReceived);

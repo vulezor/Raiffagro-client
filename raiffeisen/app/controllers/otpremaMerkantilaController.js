@@ -386,8 +386,12 @@
 			    
 			var bufView = new Uint8Array(info.data);
 			var encodedString = String.fromCharCode.apply(null, bufView);
+			//console.log("encoded", encodedString)
 			var str = decodeURIComponent(encodedString);
-
+			if(!isNaN(str)){
+				return;
+			}
+			
 			if(mainService.login_data.scale_type === 'w2110'){
 				if (str.charAt(str.length-1) === '\n') {
 				stringReceived = str.substring(0, str.length-1);
@@ -420,7 +424,6 @@
 				}
 			}else if(mainService.login_data.scale_type === 'm-0-67'){
 				if(str.trim().length>0){
-					console.log("string", str)
 					measurement_unit= str.replace(/[^\d.-]/g, '');
 					measurement_unit= Number(measurement_unit)>0 && !isNaN(parseInt(measurement_unit)) ? parseInt(measurement_unit) : 0;
 					$scope.$apply(function () { 
@@ -443,17 +446,15 @@
 					if(et[1]){
 						m = et[1];
 					}
-						measurement_unit = m;
-						
-						
-							$scope.$apply(function(){
-								$scope.insert_data.tara = parseInt(m);
-								$scope.second_insert_data.bruto = parseInt(m);
-							}
-						)
-							
 					
-						last_received =  m;
+					measurement_unit = m;
+						$scope.$apply(function(){
+							$scope.insert_data.tara = parseInt(m);
+							$scope.second_insert_data.bruto = parseInt(m);
+						}
+					)
+						
+					last_received =  m;
 				}
 				
 			}		
