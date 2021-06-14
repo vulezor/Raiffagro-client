@@ -466,6 +466,14 @@
 						})
 						last_received =  m;
 				}
+			}else if(mainService.login_data.scale_type === 'bmv-60'){
+				var s = str.replace(/\D/g,'');
+				if(s.length>0){
+					measurement_unit = Number(s);
+					$scope.$apply(function () { 
+						$scope.insert_data.bruto = measurement_unit;
+					});
+				}
 			};	
 		};
 			
