@@ -362,16 +362,15 @@
 		
 		$scope.connectionId;
 		$scope.openConection = function(){
-			//console.log($scope.$parent.login_data.scale_port);
+		
 			var bitrate = mainService.login_data.scale_type === 'm-3-488' ? 2400 : 9600
-			 chrome.serial.connect(mainService.login_data.scale_port, {bitrate: bitrate}, function(info) {
-				$scope.$apply(function () { 
-                $scope.connectionId = info.connectionId;
-                console.log('Connection opened with id: ' + $scope.connectionId + ', Bitrate: ' + info.bitrate);
-                chrome.serial.onReceive.addListener($scope.onReceiveCallback);
-     
-				});
-			});
+				chrome.serial.connect(mainService.login_data.scale_port, {bitrate: bitrate}, function(info) {
+				   $scope.$apply(function () { 
+						$scope.connectionId = info.connectionId;
+						console.log('Connection opened with id: ' + $scope.connectionId + ', Bitrate: ' + info.bitrate);
+						chrome.serial.onReceive.addListener($scope.onReceiveCallback);
+				   });
+			   });
 		};
 		
 		//---------------------------------------------------------------------------------------------------------
@@ -386,8 +385,8 @@
 			    
 			var bufView = new Uint8Array(info.data);
 			var encodedString = String.fromCharCode.apply(null, bufView);
-			//console.log("encoded", encodedString)
 			var str = decodeURIComponent(encodedString);
+
 			if(!isNaN(str)){
 				return;
 			}
@@ -405,15 +404,11 @@
 					
 				}
 				$scope.$apply(function () { 
-					
 						$scope.wagaW ();
-					
 				});
 			}else if(mainService.login_data.scale_type === 'mx100'){
 				if(str.trim().length>0){
-					console.log("string", str)
 					measurement_unit= str.replace(/[^\d.-]/g, '');
-					console.log("string replace", measurement_unit);
 					measurement_unit= measurement_unit.substring(0, measurement_unit.length - 1);
 					measurement_unit= Number(measurement_unit)>0 && !isNaN(parseInt(measurement_unit)) ? parseInt(measurement_unit) : 0;
 					$scope.$apply(function () { 
@@ -432,30 +427,20 @@
 					});
 				}
 			}else if(mainService.login_data.scale_type === 'm-3-488'){
-				if(str.length>1){
-					var m = 0;
-					var p = str.split("P+");
-					if(p[1]){
-						m = p[1];
-					}
-					var t = str.split("T+");
-					if(t[1]){
-						m = t[1];
-					}
-					var et = str.split("@+");
-					if(et[1]){
-						m = et[1];
-					}
-					
-					measurement_unit = m;
-						$scope.$apply(function(){
-							$scope.insert_data.tara = parseInt(m);
-							$scope.second_insert_data.bruto = parseInt(m);
-						}
-					)
-						
-					last_received =  m;
+				let measureValue = str.split('+');
+				
+				if(measureValue?.length==2){
+					measureValue = measureValue[1].trim();
+					console.log(Number(measureValue))
+					measurement_unit = Number(measureValue);
+					$scope.$apply(function(){
+						$scope.insert_data.tara = measurement_unit;
+						$scope.second_insert_data.bruto = measurement_unit;
+					})
+					$scope.second_insert_data.bruto = measurement_unit;
+					last_received =  measureValue;
 				}
+				
 				
 			}else if(mainService.login_data.scale_type === 'bmv-60'){
 				var s = str.replace(/\D/g,'');

@@ -446,26 +446,17 @@
 				}
 			
 			}else if(mainService.login_data.scale_type === 'm-3-488'){
-				if(str.length>1){
-					var m = 0;
-					var p = str.split("P+");
-					if(p[1]){
-						m = p[1];
-					}
-					var t = str.split("T+");
-					if(t[1]){
-						m = t[1];
-					}
-					var et = str.split("@+");
-					if(et[1]){
-						m = et[1];
-					}
-						measurement_unit = parseInt(m);
-						$scope.$apply(function(){
-							$scope.insert_data.bruto = measurement_unit;
-						})
-						last_received =  m;
+				const measureValue = str.split('+');
+				if(measureValue?.length==2){
+					measurement_unit = Number(measureValue[1]);
+				$scope.$apply(function(){
+					$scope.insert_data.bruto = measurement_unit;
+				})
+				last_received =  measureValue[1];
 				}
+				
+				
+				
 			}else if(mainService.login_data.scale_type === 'bmv-60'){
 				var s = str.replace(/\D/g,'');
 				if(s.length>0){

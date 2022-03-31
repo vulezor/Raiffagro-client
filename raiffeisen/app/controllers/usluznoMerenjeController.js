@@ -115,25 +115,14 @@
 					});
 				}
 			}else if(mainService.login_data.scale_type === 'm-3-488'){
-				if(str.length>1){
-					var m = 0;
-					var p = str.split("P+");
-					if(p[1]){
-						m = p[1];
-					}
-					var t = str.split("T+");
-					if(t[1]){
-						m = t[1];
-					}
-					var et = str.split("@+");
-					if(et[1]){
-						m = et[1];
-					}
-						measurement_unit = parseInt(m);
-						$scope.$apply(function(){
-							$scope.vaga = measurement_unit;
-						})
-						
+				let measureValue = str.split('+');
+				
+				if(measureValue?.length==2){
+					measureValue = measureValue[1].trim();
+					measurement_unit = Number(measureValue);
+					$scope.$apply(function(){
+						$scope.vaga  = measurement_unit;
+					})
 				}
 			}else if(mainService.login_data.scale_type === 'bmv-60'){
 				var s = str.replace(/\D/g,'');
