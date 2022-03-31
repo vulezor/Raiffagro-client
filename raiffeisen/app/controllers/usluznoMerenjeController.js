@@ -89,18 +89,14 @@
 					
 				});
 			} else if(mainService.login_data.scale_type === 'mx100'){
-				if(str.trim().length>0){
-					console.log("string", str)
-					measurement_unit= str.replace(/[^\d.-]/g, '');
-					console.log("string replace", measurement_unit);
-					measurement_unit= measurement_unit.substring(0, measurement_unit.length - 1);
-					//console.log("string replace1", measurement_unit);
-					//console.log("string replace2", measurement_unit.trim().length);
-					measurement_unit= Number(measurement_unit)>0 && !isNaN(parseInt(measurement_unit)) ? parseInt(measurement_unit) : 0;
+				str = str.replace(/[^\d.-]/g, '');
+			    if(str!=='0'){
+					str =  str.slice(0, -1);
+				}
+				if(str.length>0){
+					measurement_unit= Number(str);
 					$scope.$apply(function () { 
-						
 						$scope.wagaW ();
-					
 					});
 				}
 			}else if($scope.$parent.login_data.scale_type === 'm-0-67'){
